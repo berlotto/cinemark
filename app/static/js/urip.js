@@ -365,6 +365,16 @@ $(document).ready(function(){
         return false;
     });
 
+    var showCardType = function(){
+        $(".card-picture").addClass("escuro");
+        var card = moip.creditCard.cardType($(this).val());
+        if(card != null && card != undefined){
+            // console.log(card.brand);
+            $("#c"+card.brand.toLowerCase()).removeClass("escuro");
+        }
+    };
+    $("#nrocartao").change(showCardType);
+
     /* ==================================
 	   Hero Form Validation
 	=====================================*/

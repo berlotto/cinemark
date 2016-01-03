@@ -3181,6 +3181,15 @@ ul.footer-social li a {
 	font-size: 12px;
 }
 
+.card-picture{
+	max-height: 100px;
+	margin: 20px;
+	border: 1px solid #c5c5c5;
+	border-radius: 5px;
+	background: white;
+}
 
-
+.escuro{
+	filter: blur(1px) grayscale(90%);
+}
 

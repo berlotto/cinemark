@@ -305,6 +305,39 @@
 								<div class="row">
 								<br><h2 class="all-caps">4 - INFORME SEUS DADOS DE PAGAMENTO</h2>
 
+									<div class="col-lg-12 col-md-12">
+
+										<img id="cvisa" src="/static/images/cartoes/visa.png" alt="" class="card-picture escuro">
+										<img id="cmastercard" src="/static/images/cartoes/master.jpg" alt="" class="card-picture escuro">
+										<img id="camex" src="/static/images/cartoes/amex.jpg" alt="" class="card-picture escuro">
+										<img id="cdiners" src="/static/images/cartoes/diners.jpg" alt="" class="card-picture escuro">
+
+										<p>Importante: informe os dados exatamente como mostrados no seu cartao de crédito.</p>
+									</div>
+
+									<div class="col-lg-6 col-md-6">
+										<div class="required-field">
+											<input name="nrocartao" id="nrocartao" class="contact-input"  type="text" placeholder="Número do cartão">
+										</div>
+									</div>
+									<div class="col-lg-6 col-md-6">
+										<div class="required-field">
+											<input name="nome_cartao" id="nome_cartao" class="contact-input"  type="text" placeholder="Nome no cartão">
+										</div>
+									</div>
+									<div class="col-lg-8 col-md-8">
+										<div class="required-field">
+											<input name="data_expiracao" id="data_expiracao" class="contact-input"  type="text" placeholder="Data de validade">
+										</div>
+									</div>
+
+									<div class="col-lg-4 col-md-4">
+										<div class="required-field">
+											<input name="cod_seguranca" id="cod_seguranca" class="contact-input"  type="text" placeholder="Código de segurança">
+										</div>
+									</div>
+
+
 									<div class="col-lg-12 col-md-12 all-caps centered">
 
 										<button id="submit" type="submit" class="submit-btn">COMPRAR</button>
@@ -424,11 +457,20 @@
 		<!-- ScrollReveal -->
 		<script src="/static/js/minified/scrollReveal.min.js"></script>
 
+		<!-- moip js tools -->
+		<script src="https://raw.github.com/moiplabs/moipjs/master/build/moip.min.js"></script>
+
 		<!-- Custom JS -->
 		<script src="/static/js/urip.js"></script>
 
 		<!-- Expandable Navigation Menu -->
 		<script src="/static/js/minified/expandableNav.min.js"></script>
+
+		<script
+			type='text/javascript'
+			src='{{MOIP_URL}}/transparente/MoipWidget-v2.js'
+			charset='ISO-8859-1'>
+		</script>
 
 	</body>
 </html>
