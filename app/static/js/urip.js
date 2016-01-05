@@ -366,14 +366,122 @@ $(document).ready(function(){
     });
 
     var showCardType = function(){
-        $(".card-picture").addClass("escuro");
+        $(".card-picture").addClass("escondido");
         var card = moip.creditCard.cardType($(this).val());
         if(card != null && card != undefined){
             // console.log(card.brand);
-            $("#c"+card.brand.toLowerCase()).removeClass("escuro");
+            $("#c"+card.brand.toLowerCase()).removeClass("escondido");
+        }else{
+            $("#ccartao").removeClass("escondido");
         }
     };
     $("#nrocartao").change(showCardType);
+    $("#nrocartao").change();
+
+    var priceValue = function(){
+        var qtd = $("#quantidade").val();
+        if(qtd<0){ $("#quantidade").val(0) }
+        if(qtd>10){ $("#quantidade").val(10) }
+        var cupom = $("#cupom").val();
+        if( qtd != null && qtd > 0 ){
+            if( $.md5( cupom.toLowerCase() ) == CP_DES ){
+                $(".valores").removeClass("escondido");
+                $("#vlrunit").val("R$ "+VL_ING+" (até "+VL_DES+"% de desconto)")
+                $("#vlrtotal").val("R$ " + (qtd * VL_ING) )
+            }else{
+                if( $.md5( cupom.toLowerCase() ) == CP_FRE ){
+                    $(".valores").removeClass("escondido");
+                    $("#vlrunit").val("R$ 0,00 (100% de desconto)")
+                    $("#vlrtotal").val("R$ 0,00")
+                }else{
+                    $(".valores").addClass("escondido");
+                }
+            }
+        }else{
+            $(".valores").addClass("escondido");
+        }
+    };
+    $("#cupom").change(priceValue);
+    $("#quantidade").change(priceValue);
+    priceValue();
+
+    var maskOpt = {selectOnFocus: true};
+    $('#quantidade').mask('00',maskOpt);
+    $('#cep').mask('00000-000',maskOpt);
+    $('#nro').mask('#######0',maskOpt);
+    $('#cpf').mask('000.000.000-00',maskOpt);
+    $('#nrocartao').mask('0000-0000-0000-0000',maskOpt);
+    $('#data_expiracao').mask('00/0000',maskOpt);
+    $('#cod_seguranca').mask('000',maskOpt);
+    var SPMaskBehavior = function (val) {
+      return val.replace(/\D/g, '').length === 11 ? '(00) 00000-0000' : '(00) 0000-00009';
+    },
+    spOptions = {
+      onKeyPress: function(val, e, field, options) {
+          field.mask(SPMaskBehavior.apply({}, arguments), options);
+        },
+      selectOnFocus: true
+    };
+    $('#telefone').mask(SPMaskBehavior, spOptions);
+
+    var limpa_formulário_cep = function(){
+        $("#rua").val("");
+        $("#nro").val("");
+        $("#complemento").val("");
+        $("#bairro").val("");
+        $("#cidade").val("");
+        $("#uf").val("");
+    };
+
+    $("#cep").blur(function(){
+                //Nova variável "cep" somente com dígitos.
+                var cep = $(this).val().replace(/\D/g, '');
+
+                //Verifica se campo cep possui valor informado.
+                if (cep != "") {
+
+                    //Expressão regular para validar o CEP.
+                    var validacep = /^[0-9]{8}$/;
+
+                    //Valida o formato do CEP.
+                    if(validacep.test(cep)) {
+
+                        //Preenche os campos com "..." enquanto consulta webservice.
+                        $("#rua").val("...")
+                        $("#bairro").val("...")
+                        $("#cidade").val("...")
+                        $("#uf").val("...")
+
+                        //Consulta o webservice viacep.com.br/
+                        $.getJSON("//viacep.com.br/ws/"+ cep +"/json/?callback=?", function(dados) {
+
+                            if (!("erro" in dados)) {
+                                //Atualiza os campos com os valores da consulta.
+                                $("#rua").val(dados.logradouro);
+                                $("#bairro").val(dados.bairro);
+                                $("#cidade").val(dados.localidade);
+                                $("#uf").val(dados.uf);
+                                $("#nro").focus();
+                            } //end if.
+                            else {
+                                //CEP pesquisado não foi encontrado.
+                                limpa_formulário_cep();
+                                $('#cep-error').addClass('show-up');
+                            }
+                        });
+                    } //end if.
+                    else {
+                        //cep é inválido.
+                        limpa_formulário_cep();
+                        $('#cep-error').addClass('show-up');
+                    }
+                } //end if.
+                else {
+                    //cep sem valor, limpa formulário.
+                    limpa_formulário_cep();
+                }
+    })
+
 
     /* ==================================
 	   Hero Form Validation

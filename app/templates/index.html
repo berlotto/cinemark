@@ -230,96 +230,128 @@
 
 					<div class="contact-content col-lg-10 col-lg-offset-1 centered">
 						<form class="contact-form" id="contact-form" method="POST" action="/contact">
-						<h2 class="all-caps">1 - Informe a quantidade</h2>
-
-									<div class="col-lg-12 col-md-12">
-
-										<input name="quantidade" id="quantidade" class="contact-input" type="number" placeholder="Informe a quantidade">
-
-									</div> <!--/ .col-lg-6 -->
 
 								<div class="row">
-									<h2 class="all-caps"><br/>2 - INSIRA O CUPOM DE DESCONTO</h2>
-
-									<div class="col-lg-12 col-md-12">
-
+									<div class="col-lg-2 col-md-2 text-left">
+										<h4>Quantidade:</h4>
+									</div>
+									<div class="col-lg-3 col-md-3">
+										<input name="quantidade" id="quantidade" class="contact-input" type="number" placeholder="Informe a quantidade">
+									</div> <!--/ .col-lg-6 -->
+									<div class="col-lg-4 col-md-4 text-right">
+										<h4>Cupom de desconto:</h4>
+									</div>
+									<div class="col-lg-3 col-md-3">
 										<div class="required-field">
 											<input name="cupom" id="cupom" class="contact-input" type="text"  placeholder="Insira o Cupom de desconto">
 										</div> <!--/ .required-field -->
-
 									</div>
-</div>
-								<div class="row">
-									<div class="col-lg-6 col-md-6">
-												<h2>Valor unitário</h2>
+								</div> <!--/ row -->
+								<div class="row valores escondido">
+									<div class="col-lg-6 col-md-6 text-right">
+										<h4>Valor unitário</h4>
 									</div>
 
 									<div class="col-lg-6 col-md-6">
-
-										<div class="required-field">
-											<input name="vlrunit" id="vlrunit" class="contact-input"  type="text" placeholder="R$ XX,XX">
-										</div> <!--/ .required-field -->
-
+										<input name="vlrunit" id="vlrunit" disabled class="contact-input"  type="text" placeholder="R$ XX,XX">
 									</div>
 								</div>
 
-								<div class="row">
-									<div class="col-lg-6 col-md-6">
-												<h2>Valor Total</h2>
+								<div class="row valores escondido">
+									<div class="col-lg-6 col-md-6 text-right">
+										<h4>Valor Total</h4>
 									</div>
 
 									<div class="col-lg-6 col-md-6">
-
-										<div class="required-field">
-											<input name="vlrtotal" id="vlrtotal" class="contact-input"  type="text" placeholder="R$ XX,XX">
-										</div> <!--/ .required-field -->
-
+										<input name="vlrtotal" id="vlrtotal" disabled class="contact-input"  type="text" placeholder="R$ XX,XX">
 									</div>
 								</div>
 								<div class="row">
-								<br><h2 class="all-caps">3 - INFORME SEUS DADOS</h2>
-
-
 									<div class="col-lg-12 col-md-12">
+										<h2>Informe seus dados</h2>
+									</div>
+								</div>
+
+								<div class="row">
+
+									<div class="col-lg-8 col-md-8">
 										<div class="required-field">
-											<input name="nome" id="nome" class="contact-input"  type="text" placeholder="Nome">
+											<input name="nome" id="nome" class="contact-input"  type="text" placeholder="Seu nome">
 										</div>
 									</div>
 
-									<div class="col-lg-12 col-md-12">
-										<input name="telefone" id="telefone" class="contact-input" type="text" placeholder="Telefone">
-									</div>
-
-									<div class="col-lg-12 col-md-12">
+									<div class="col-lg-4 col-md-4">
 										<div class="required-field">
-											<input name="email" id="email" class="contact-input" type="email" placeholder="E-mail">
+											<input name="telefone" id="telefone" class="contact-input" type="text" placeholder="Seu telefone">
+										</div>
+									</div>
+								</div>
+
+								<div class="row">
+									<div class="col-lg-6 col-md-6">
+										<div class="required-field">
+											<input name="email" id="email" class="contact-input" type="email" placeholder="Seu e-mail">
 										</div>
 									</div>
 
-									<div class="col-lg-12 col-md-12">
-										<input name="cpf" id="cpf" class="contact-input" type="text" placeholder="CPF">
+									<div class="col-lg-6 col-md-6">
+										<div class="required-field">
+											<input name="cpf" id="cpf" class="contact-input" type="text" placeholder="Seu CPF">
+										</div>
 									</div>
-
 
 								</div>
 								<div class="row">
-								<br><h2 class="all-caps">4 - INFORME SEUS DADOS DE PAGAMENTO</h2>
-
-									<div class="col-lg-12 col-md-12">
-
-										<img id="cvisa" src="/static/images/cartoes/visa.png" alt="" class="card-picture escuro">
-										<img id="cmastercard" src="/static/images/cartoes/master.jpg" alt="" class="card-picture escuro">
-										<img id="camex" src="/static/images/cartoes/amex.jpg" alt="" class="card-picture escuro">
-										<img id="cdiners" src="/static/images/cartoes/diners.jpg" alt="" class="card-picture escuro">
-
-										<p>Importante: informe os dados exatamente como mostrados no seu cartao de crédito.</p>
+									<div class="col-lg-3 col-md-3">
+										<div class="required-field">
+											<input name="cep" id="cep" class="contact-input" type="text" placeholder="Seu CEP">
+										</div>
 									</div>
-
-									<div class="col-lg-6 col-md-6">
+									<div class="col-lg-4 col-md-4">
+											<input name="rua" id="rua" class="contact-input" readonly type="text" placeholder="Logradouro">
+									</div>
+									<div class="col-lg-2 col-md-2">
+										<div class="required-field">
+											<input name="nro" id="nro" class="contact-input" type="text" placeholder="Nro">
+										</div>
+									</div>
+									<div class="col-lg-3 col-md-3">
+										<div class="required-field">
+											<input name="complemento" id="complemento" class="contact-input" type="text" placeholder="Compl">
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-lg-3 col-md-3">
+											<input name="bairro" id="bairro" class="contact-input" readonly type="text" placeholder="Bairro">
+									</div>
+									<div class="col-lg-4 col-md-4">
+											<input name="cidade" id="cidade" class="contact-input" readonly type="text" placeholder="Cidade">
+									</div>
+									<div class="col-lg-2 col-md-2">
+											<input name="uf" id="uf" class="contact-input" readonly type="text" placeholder="Estado">
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-lg-12 col-md-12">
+										<h2>Informe os dados do seu cartão de crédito</h2>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-lg-4 col-md-4">
 										<div class="required-field">
 											<input name="nrocartao" id="nrocartao" class="contact-input"  type="text" placeholder="Número do cartão">
 										</div>
 									</div>
+
+									<div class="col-lg-2 col-md-2">
+										<img id="ccartao" src="http://placehold.it/79x50?text=Cartao" alt="" class="card-picture img-responsive img-rounded ">
+										<img id="cvisa" src="/static/images/cartoes/visa.png" alt="" class="card-picture img-responsive img-rounded escondido ">
+										<img id="cmastercard" src="/static/images/cartoes/master.jpg" alt="" class="card-picture img-responsive img-rounded escondido ">
+										<img id="camex" src="/static/images/cartoes/amex.jpg" alt="" class="card-picture img-responsive img-rounded escondido ">
+										<img id="cdiners" src="/static/images/cartoes/diners.jpg" alt="" class="card-picture img-responsive img-rounded escondido ">
+									</div>
+
 									<div class="col-lg-6 col-md-6">
 										<div class="required-field">
 											<input name="nome_cartao" id="nome_cartao" class="contact-input"  type="text" placeholder="Nome no cartão">
@@ -399,6 +431,14 @@
 
 		</div> <!--/ #error-notification -->
 
+		<div id="cep-error" class="notif-box error-notif">
+
+			<span class="icon-bullhorn notif-icon"></span>
+			<p>Seu cep não foi encontrado, ou está inválido. Corrija e tente novamente.</p>
+			<a class="notification-close">Fechar</a>
+
+		</div> <!--/ #error-notification -->
+
 		<div id="success-notification" class="notif-box">
 
 			<span class="icon-checkmark notif-icon"></span>
@@ -409,7 +449,7 @@
 		<!-- END Contact Form Alert/Notifications -->
 		<!--
 		=====================================
-		--/ END FORM NOTIFICATIONS CONTENT ==
+		/ END FORM NOTIFICATIONS CONTENT ==
 		=====================================
 		-->
 
@@ -454,11 +494,24 @@
 		<!-- Headhesive -->
 		<script src="/static/js/minified/headhesive.min.js"></script>
 
+		<!-- Mask fields -->
+		<script src="/static/js/jquery.mask.min.js"></script>
+
 		<!-- ScrollReveal -->
 		<script src="/static/js/minified/scrollReveal.min.js"></script>
 
-		<!-- moip js tools -->
+		<!-- moip js tools https://github.com/moiplabs/moipjs -->
 		<script src="https://raw.github.com/moiplabs/moipjs/master/build/moip.min.js"></script>
+
+		<!-- MD5 function -->
+		<script src="/static/js/jquery.md5.js"></script>
+
+		<script>
+			CP_DES = "{{cupom_desconto}}";
+			CP_FRE = "{{cupom_free}}";
+			VL_ING = "{{valor_ingresso}}";
+			VL_DES = "{{valor_desconto}}";
+		</script>
 
 		<!-- Custom JS -->
 		<script src="/static/js/urip.js"></script>

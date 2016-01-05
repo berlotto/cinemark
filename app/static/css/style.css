@@ -174,7 +174,7 @@ h5,
 h6 {
 	margin-top: 0;
 	margin-bottom: 20px;
-	color: #222;
+	color: #FFF;
 	line-height: 1.5em;
 }
 
@@ -1344,12 +1344,14 @@ a.overlay-close:hover {
 }
 
 #error-notification,
+#cep-error,
 #subscribe-error-notification {
 	background: #cc3530;
 	color: rgba(250, 251, 255, 0.95);
 }
 
 #error-notification.notif-box,
+#cep-error.notif-box,
 #subscribe-error-notification.notif-box {
 	box-shadow: inset 4.5em 0 #b80d07;
 }
@@ -3182,14 +3184,20 @@ ul.footer-social li a {
 }
 
 .card-picture{
-	max-height: 100px;
+	max-height: 50px;
+	/*
 	margin: 20px;
 	border: 1px solid #c5c5c5;
 	border-radius: 5px;
+	*/
 	background: white;
 }
 
 .escuro{
 	filter: blur(1px) grayscale(90%);
+}
+
+.escondido{
+	display: none;
 }
 
