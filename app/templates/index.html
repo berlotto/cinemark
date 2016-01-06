@@ -29,6 +29,9 @@
 		<link rel="stylesheet" href="/static/css/style-responsive.css">
 		<link rel="stylesheet" href="/static/css/expandableGallery.css">
 
+		<!-- Latest compiled and minified CSS -->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.9.3/css/bootstrap-select.min.css">
+
 	    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 	    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 	    <!--[if lt IE 9]>
@@ -472,6 +475,28 @@
 		        	<ul id="sse"></ul>
 		        </p>
 
+				<div class="row">
+					<div class="col-lg-12 col-md-12">
+					<p>Aproveite a facilidade e já escolha o cinema mais perto de você no campo abaixo:</p>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-12 col-md-12">
+						<select id="cinemas" class="selectpicker" data-live-search="true">
+							{%for cidade in cinemas.cidades%}
+								{%for cinema in cinemas.cidades[cidade]%}
+								<option
+									data-tokens="{{cidade}} {{cinema}}"
+									value="{{cinemas.url|format(cidade,cinema)}}">{{cidade|replace("-"," ")|capitalize}} - {{cinema|replace("-"," ")|capitalize}}
+								</option>
+								{%endfor%}
+							{%endfor%}
+						</select>
+						<button type="button" id="verfilmes" class="btn btn-primary">Ver os filmes</button>
+					</div>
+				</div>
+
+
 				<div id="MoipWidget"
 		             data-token=""
 		             callback-method-success="moipSuccess"
@@ -529,6 +554,12 @@
 		<script src="/static/js/minified/jquery-css-transform.min.js"></script>
 		<script src="/static/js/minified/jquery-animate-css-rotate-scale.min.js"></script>
 		<script src="/static/js/minified/jquery.quicksand.min.js"></script>
+
+		<!-- Latest compiled and minified JavaScript -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.9.3/js/bootstrap-select.min.js"></script>
+
+		<!-- (Optional) Latest compiled and minified JavaScript translation files -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.9.3/js/i18n/defaults-*.min.js"></script>
 
 		<!-- Headhesive -->
 		<script src="/static/js/minified/headhesive.min.js"></script>

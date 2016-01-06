@@ -5,6 +5,7 @@
 from flask import Flask, render_template, jsonify, request
 from moipy import Moip
 from hashlib import md5
+from cinemas import CINEMAS
 
 #Temporatio
 from random import choice
@@ -42,7 +43,8 @@ def index():
         MOIP_URL=MOIP_URL,config=app.config,
         cupom_desconto=md5_cupom, cupom_free=md5_free,
         valor_ingresso=app.config.get("VALOR_INGRESSO"),
-        valor_desconto=desconto_dado)
+        valor_desconto=desconto_dado,
+        cinemas=CINEMAS)
 
 @app.route("/ss", methods=("POST",))
 def ss():

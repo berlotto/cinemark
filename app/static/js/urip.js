@@ -372,30 +372,33 @@ function formatCurrency(total) {
         }else{
             $('#nro').parent('div').removeClass('field-error');
         }
-        //CARTAO DE CREDITO
-        if(nrocartao.length == 0){
-            var error = true;
-            $('#nrocartao').parent('div').addClass('field-error');
-        }else{
-            $('#nrocartao').parent('div').removeClass('field-error');
-        }
-        if(nome_cartao.length == 0){
-            var error = true;
-            $('#nome_cartao').parent('div').addClass('field-error');
-        }else{
-            $('#nome_cartao').parent('div').removeClass('field-error');
-        }
-        if(data_expiracao.length == 0){
-            var error = true;
-            $('#data_expiracao').parent('div').addClass('field-error');
-        }else{
-            $('#data_expiracao').parent('div').removeClass('field-error');
-        }
-        if(cod_seguranca.length == 0){
-            var error = true;
-            $('#cod_seguranca').parent('div').addClass('field-error');
-        }else{
-            $('#cod_seguranca').parent('div').removeClass('field-error');
+
+        if( $.md5( cupom.toLowerCase() ) != CP_FRE ){
+            //CARTAO DE CREDITO
+            if(nrocartao.length == 0){
+                var error = true;
+                $('#nrocartao').parent('div').addClass('field-error');
+            }else{
+                $('#nrocartao').parent('div').removeClass('field-error');
+            }
+            if(nome_cartao.length == 0){
+                var error = true;
+                $('#nome_cartao').parent('div').addClass('field-error');
+            }else{
+                $('#nome_cartao').parent('div').removeClass('field-error');
+            }
+            if(data_expiracao.length == 0){
+                var error = true;
+                $('#data_expiracao').parent('div').addClass('field-error');
+            }else{
+                $('#data_expiracao').parent('div').removeClass('field-error');
+            }
+            if(cod_seguranca.length == 0){
+                var error = true;
+                $('#cod_seguranca').parent('div').addClass('field-error');
+            }else{
+                $('#cod_seguranca').parent('div').removeClass('field-error');
+            }
         }
         // if(message.length == 0){
         //     var error = true;
@@ -717,3 +720,10 @@ function formatCurrency(total) {
     };
 })(jQuery);
 
+
+$('.selectpicker').selectpicker({"width":"auto"});
+
+$("#verfilmes").click(function(){
+    var url = $("#cinemas").val();
+    window.open(url);
+});
