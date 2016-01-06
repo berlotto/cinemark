@@ -13,6 +13,18 @@ db_session = scoped_session(sessionmaker(autocommit=False,
 Base = declarative_base()
 Base.query = db_session.query_property()
 
+class SuperSaver(Base):
+    __tablename__ = "supersaver"
+
+    id = Column(Integer, primary_key=True)
+    cupom = Column(String(50), unique=True)
+    usado = Column(Boolean)
+
+    def __init__(self,cupom):
+        self.cupom = cupom
+        self.usado = False
+
+
 class Venda(Base):
     __tablename__ = 'vendas'
     # id_pagador - Identificador que vai junto à venda no Moip
@@ -28,10 +40,13 @@ class Venda(Base):
     email_enviado = Column(Boolean)
     data_envio = Column(String(50))
     token_moip = Column(String(1000))
-    cupom_usado = Column(String(150))
+    cupom_usado = Column(String(50))
+    super_savers = Column(String(2000))
     valor_pago = Column(Float)
+    falhou = Column(Boolean)
 
     def __init__(self, nome):
+        self.falhou = False
         self.pagamento = "Cartao"
         self.nome_cliente = nome
         self.id_proprio = dt.now().strftime("V%m%d%H%M%S")

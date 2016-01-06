@@ -438,10 +438,12 @@ function formatCurrency(total) {
                         $("#MoipWidget").attr("data-token", data.token);
 
                         // $("#confirmbutton").click(pagarMoip);
+                        window.venda = data.venda
                         pagarMoip(data.dados_retorno);  // Return methods are: moipSuccess and moipError above
                     }else{
                         $("#infopagto").addClass("escondido");
                         //Inseriu o cupom gratuito
+                        window.venda = data.venda
                         moipSuccess();
                     }
                 }else{
@@ -474,7 +476,8 @@ function formatCurrency(total) {
     moipSuccess = function(data){
         waitingDialog.message('Gerando seus códigos...');
         $('#sse li').remove();
-        var posting = $.post( "/ss", {"q":$("#quantidade").val(),"t":$("#MoipWidget").attr("data-token")} );
+        var posting = $.post( "/ss", {"q":$("#quantidade").val(),"t":window.venda} );
+        // var posting = $.post( "/ss", {"q":$("#quantidade").val(),"t":$("#MoipWidget").attr("data-token")} );
         posting.done(function( data ) {
             for( var codigo in data.codigos){
                 $("#sse").append(

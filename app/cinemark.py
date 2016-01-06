@@ -6,7 +6,7 @@ from flask import Flask, render_template, jsonify, request
 from moipy import Moip
 from hashlib import md5
 from cinemas import CINEMAS
-from database import db_session, create, Venda
+from database import db_session, create, Venda, SuperSaver
 
 #Temporatio
 from random import choice
@@ -21,12 +21,12 @@ def shutdown_session(exception=None):
     db_session.remove()
 
 #============================================================================
-def get_super_savers(qtd):
-    l = []
-    for nro in range(int(qtd)):
-        uid = ''.join([ choice(string.letters+string.digits) for x in range(6) ])
-        l.append(uid)
-    return l
+# def get_super_savers(qtd):
+#     l = []
+#     for nro in range(int(qtd)):
+#         uid = ''.join([ choice(string.letters+string.digits) for x in range(6) ])
+#         l.append(uid)
+#     return l
 
 #============================================================================
 @app.route("/", methods=("GET",))
@@ -51,9 +51,24 @@ def index():
 #============================================================================
 @app.route("/ss", methods=("POST",))
 def ss():
+
+    retorno = SuperSaver.query.filter(SuperSaver.usado == False).limit(request.form.get("q")).all()
     resposta = {
-        "codigos":get_super_savers(request.form.get("q"))
+        "codigos": [ s.cupom for s in retorno ]
     }
+
+    #Atualiza os cupons já utilizados
+    for ss in retorno:
+        ss.usado = True
+        db_session.add(ss)
+
+    #Atualiza os tokens utilizados no registro da venda
+    venda = Venda.query.get( request.form.get("t") )
+    venda.super_savers = ",".join([ s.cupom for s in retorno ])
+    db_session.add(venda)
+
+    db_session.commit()
+
     return jsonify(resposta)
 
 #============================================================================
@@ -80,10 +95,10 @@ def contact():
         resposta = {
             "sucesso":'Sucesso',
             'token':'',
-            "tudogratis":True
+            "tudogratis":True,
+            'venda' : venda.id
         }
 
-        venda
     else:
 
         moip = Moip(app.config.get("MOIP_RAZAO_PAGAMENTO"))
@@ -139,9 +154,13 @@ def contact():
         if resposta['sucesso'] == "Sucesso":
             venda.token_moip = resposta['token']
             create(venda)
+        else:
+            venda.falhou = True
+            create(venda)
         print "Resposta:", resposta
         resposta['dados_retorno'] = dados_retorno
         resposta['tudogratis'] = False
+        resposta['venda'] = venda.id
 
     return jsonify(resposta)
 
