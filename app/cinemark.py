@@ -29,6 +29,15 @@ def shutdown_session(exception=None):
 #     return l
 
 #============================================================================
+@app.route("/background",methods=("GET",))
+def background():
+    vendas = Venda.query.filter(Venda.falhou == False).all()
+    return render_template(
+        "listagem.html",
+        vendas=vendas
+        )
+
+#============================================================================
 @app.route("/", methods=("GET",))
 def index():
     if app.config.get("DEBUG"):
@@ -98,6 +107,10 @@ def contact():
             "tudogratis":True,
             'venda' : venda.id
         }
+
+        venda.pagamento = "Free"
+        venda.valor_pago = 0
+        create(venda)
 
     else:
 

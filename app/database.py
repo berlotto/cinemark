@@ -3,7 +3,7 @@ import config
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, Boolean, Float
+from sqlalchemy import Column, Integer, String, Boolean, Float, DateTime
 from datetime import datetime as dt
 
 engine = create_engine(config.DATABASE_URL, convert_unicode=True)
@@ -31,6 +31,7 @@ class Venda(Base):
     id = Column(Integer, primary_key=True)
     #Id da transacao que vai junto à venda no Moip
     id_proprio = Column(Integer, unique=True)
+    data_hora = Column(DateTime)
     quantidade = Column(Integer)
     nome_cliente = Column(String(200))
     telefone_cliente = Column(String(50))
@@ -49,6 +50,7 @@ class Venda(Base):
         self.falhou = False
         self.pagamento = "Cartao"
         self.nome_cliente = nome
+        self.data_hora = dt.now()
         self.id_proprio = dt.now().strftime("V%m%d%H%M%S")
 
     def __repr__(self):
