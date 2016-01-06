@@ -2,12 +2,28 @@
 
 #
 
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify, request
 from moipy import Moip
 from hashlib import md5
 
+#Temporatio
+from random import choice
+import string
+
 app = Flask(__name__)
 app.config.from_object('config')
+
+# Metodo que gerencia os IDs de transcoes conforme necessario
+def get_next_trans_id():
+    uid = ''.join([ choice(string.letters+string.digits) for x in range(6) ])
+    return uid
+
+def get_super_savers(qtd):
+    l = []
+    for nro in range(int(qtd)):
+        uid = ''.join([ choice(string.letters+string.digits) for x in range(6) ])
+        l.append(uid)
+    return l
 
 
 @app.route("/", methods=("GET",))
@@ -28,41 +44,83 @@ def index():
         valor_ingresso=app.config.get("VALOR_INGRESSO"),
         valor_desconto=desconto_dado)
 
+@app.route("/ss", methods=("POST",))
+def ss():
+    resposta = {
+        "codigos":get_super_savers(request.form.get("q"))
+    }
+    return jsonify(resposta)
+
 @app.route("/contact", methods=("POST",))
 def contact():
 
-    moip = Moip('Razao do Pagamento')
+    dados = request.form
+    tudogratis = False
 
-    #Dados necessários para checkout transparent
-    endereco = dict(
-        Logradouro='Rua xxxxx',
-        Numero='222',
-        Bairro='xxxx',
-        Cidade='xxxx',
-        Estado='xx',
-        CEP='xxxxxx',
-        TelefoneFixo='xxxxxxxxxx'
-    )
-    moip.set_pagador(
-        Nome='xxxx',
-        Email='xxxxxx',
-        Apelido='vitalbh',
-        IdPagador='x',
-        EnderecoCobranca=endereco
-    )
+    if dados.get("cupom").lower() == app.config.get("CUPOM_FREE"):
+        #Aqui não necessita pagar nada e somente retorna ok para a tela
+        #de confirmacao dos super-savers
+        tudogratis = True
+        resposta = {
+            "sucesso":'Sucesso',
+            'token':'',
+            "tudogratis":True
+        }
+    else:
 
-    moip.set_credenciais(token='seu_token',key='sua_key')
+        moip = Moip(app.config.get("MOIP_RAZAO_PAGAMENTO"))
 
-    if app.config.get("debug"):
-        moip.set_ambiente('sandbox')
+        #Dados necessários para checkout transparent
+        endereco = dict(
+            Logradouro=dados.get("rua"),
+            Numero=dados.get("nro"),
+            Complemento=dados.get("complemento"),
+            Bairro=dados.get("bairro"),
+            Cidade=dados.get("cidade"),
+            Estado=dados.get("uf"),
+            CEP=dados.get("cep"),
+            TelefoneFixo=dados.get("telefone")
+        )
+        moip.set_pagador(
+            Nome=dados.get("nome"),
+            Email=dados.get("email"),
+            # Apelido='vitalbh',
+            IdPagador='CLI_003',
+            EnderecoCobranca=endereco
+        )
 
-    moip.set_valor('12345')
-    moip.set_data_vencimento('yyyy-mm-dd')
-    moip.set_id_proprio('abc123')
-    moip.set_checkout_transparent()
-    moip.envia()
+        dados_retorno = {
+            "Forma": "CartaoCredito",
+            "Instituicao": dados.get("cardtype"),
+            "Parcelas": "1",
+            "CartaoCredito": {
+                "Numero": dados.get("nrocartao"),
+                "Expiracao": dados.get("data_expiracao"),
+                "CodigoSeguranca": dados.get("cod_seguranca"),
+                "Portador": {
+                    "Nome": dados.get("nome_cartao"),
+                    "DataNascimento": dados.get("data_nascimento"),
+                    "Telefone": dados.get("telefone"),
+                    "Identidade": dados.get("cpf")
+                }
+            }
+        }
 
-    resposta = moip.get_resposta() # {sucesso:'Sucesso','token':'KJHSDASKD392847293AHFJKDSAH'}
+        moip.set_credenciais(token=app.config.get("MOIP_TOKEN"),key=app.config.get("MOIP_KEY"))
+
+        if app.config.get("DEBUG"):
+            moip.set_ambiente('sandbox')
+
+        moip.set_valor( str(int(dados.get("quantidade")) * app.config.get("VALOR_INGRESSO")) )
+        moip.set_data_vencimento('2016-01-20')
+        moip.set_id_proprio(get_next_trans_id())
+        moip.set_checkout_transparente()
+        print "Enviando pagto..."
+        moip.envia()
+        resposta = moip.get_resposta() # {sucesso:'Sucesso','token':'KJHSDASKD392847293AHFJKDSAH'}
+        print "Resposta:", resposta
+        resposta['dados_retorno'] = dados_retorno
+        resposta['tudogratis'] = False
 
     return jsonify(resposta)
 

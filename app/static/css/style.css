@@ -178,6 +178,13 @@ h6 {
 	line-height: 1.5em;
 }
 
+h4.modal-title {
+	color: #000;
+}
+.modal-header h3{
+	color: #c5c5c5;
+}
+
 h1,
 h2,
 h3,

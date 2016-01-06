@@ -271,6 +271,15 @@ $(document).ready(function(){
 	closeBttn.addEventListener( 'click', toggleOverlay );
 
 
+function formatCurrency(total) {
+    var neg = false;
+    if(total < 0) {
+        neg = true;
+        total = Math.abs(total);
+    }
+    return (neg ? "-R$ " : 'R$ ') + parseFloat(total, 10).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "R$ 1,").toString();
+}
+
 	/* ==================================
 	   Contact Form Validation
 	=====================================*/
@@ -281,14 +290,28 @@ $(document).ready(function(){
 
         // Variable declaration
         var error = false;
+        var quantidade = $('#quantidade').val();
         var cupom = $('#cupom').val();
         var vlrunit = $('#vlrunit').val();
         var vlrtotal = $('#vlrtotal').val();
         var nome = $('#nome').val();
+        var telefone = $('#telefone').val();
+        var data_nascimento = $('#data_nascimento').val();
         var email = $('#email').val();
+        var cpf = $('#cpf').val();
+        var cep = $('#cep').val();
+        var nro = $('#nro').val();
+
+        var nrocartao = $('#nrocartao').val();
+        var nome_cartao = $('#nome_cartao').val();
+        var data_expiracao = $('#data_expiracao').val();
+        var cod_seguranca = $('#cod_seguranca').val();
         // var message = $('#message').val();
 
-     	// Form field validation
+    	// Form field validation
+        if(quantidade.lenght == 0){
+            $('#quantidade').val("1");
+        }
         if(cupom.length == 0){
             var error = true;
             $('#cupom').parent('div').addClass('field-error');
@@ -307,17 +330,72 @@ $(document).ready(function(){
         }else{
             $('#vlrtotal').parent('div').removeClass('field-error');
         }
+        if(nome.length == 0){
+            var error = true;
+            $('#nome').parent('div').addClass('field-error');
+        }else{
+            $('#nome').parent('div').removeClass('field-error');
+        }
+        if(telefone.length == 0){
+            var error = true;
+            $('#telefone').parent('div').addClass('field-error');
+        }else{
+            $('#telefone').parent('div').removeClass('field-error');
+        }
         if(email.length == 0 || email.indexOf('@') == '-1'){
             var error = true;
             $('#email').parent('div').addClass('field-error');
         }else{
             $('#email').parent('div').removeClass('field-error');
         }
-        if(nome.length == 0){
+        if(data_nascimento.length == 0){
             var error = true;
-            $('#nome').parent('div').addClass('field-error');
+            $('#data_nascimento').parent('div').addClass('field-error');
         }else{
-            $('#nome').parent('div').removeClass('field-error');
+            $('#data_nascimento').parent('div').removeClass('field-error');
+        }
+        if(cpf.length == 0){
+            var error = true;
+            $('#cpf').parent('div').addClass('field-error');
+        }else{
+            $('#cpf').parent('div').removeClass('field-error');
+        }
+        if(cep.length == 0){
+            var error = true;
+            $('#cep').parent('div').addClass('field-error');
+        }else{
+            $('#cep').parent('div').removeClass('field-error');
+        }
+        if(nro.length == 0){
+            var error = true;
+            $('#nro').parent('div').addClass('field-error');
+        }else{
+            $('#nro').parent('div').removeClass('field-error');
+        }
+        //CARTAO DE CREDITO
+        if(nrocartao.length == 0){
+            var error = true;
+            $('#nrocartao').parent('div').addClass('field-error');
+        }else{
+            $('#nrocartao').parent('div').removeClass('field-error');
+        }
+        if(nome_cartao.length == 0){
+            var error = true;
+            $('#nome_cartao').parent('div').addClass('field-error');
+        }else{
+            $('#nome_cartao').parent('div').removeClass('field-error');
+        }
+        if(data_expiracao.length == 0){
+            var error = true;
+            $('#data_expiracao').parent('div').addClass('field-error');
+        }else{
+            $('#data_expiracao').parent('div').removeClass('field-error');
+        }
+        if(cod_seguranca.length == 0){
+            var error = true;
+            $('#cod_seguranca').parent('div').addClass('field-error');
+        }else{
+            $('#cod_seguranca').parent('div').removeClass('field-error');
         }
         // if(message.length == 0){
         //     var error = true;
@@ -333,30 +411,82 @@ $(document).ready(function(){
         }
 
         if(error == false){
+            toggleOverlay();
+            waitingDialog.show('Aguarde...');
+
             // Get some values from elements on the page:
             var $form = $("#contact-form"),
                 url = $form.attr( "action" );
 
-
             //Get all data from inputs
             var formData = $form.serializeFormJSON()
-
-            console.log(url);
-            console.log(formData);
 
             // Send the data using post
             var posting = $.post( url, formData );
 
             // // Put the results in a div
             posting.done(function( data ) {
-                if(data.result == 'ok'){
-                    $('#success-notification').addClass('show-up');
-                    $('.submit-btn').addClass('disabled');
-                    toggleOverlay()
+                if(data.sucesso == 'Sucesso'){
+                    if(data.tudogratis == false){
+                        $("#infopagto").removeClass("escondido");
+                        waitingDialog.message('Confirmando pagamento...');
+                        //Show confirm dialog
+                        // $("#ctoken").html(data.token);
+                        $("#MoipWidget").attr("data-token", data.token);
+
+                        // $("#confirmbutton").click(pagarMoip);
+                        pagarMoip(data.dados_retorno);  // Return methods are: moipSuccess and moipError above
+                    }else{
+                        $("#infopagto").addClass("escondido");
+                        //Inseriu o cupom gratuito
+                        moipSuccess();
+                    }
+                }else{
+                    waitingDialog.hide();
+                    toggleOverlay();
+                    alert('Falha no pagto\n' + data.token);
                 }
             });
         }
     });
+
+    var limpaFormGeral = function(){
+        // $('#sse li').remove();
+        $("#contact-form").find("input[type=text], input[type=email],  input[type=number], textarea").val("");
+        $(".valores").addClass("escondido");
+    }
+
+    $('#confirmpagto').modal({
+        'keyboard': false,
+        'backdrop': 'static',
+        'show': false
+    });
+
+    moipSuccess = function(data){
+        waitingDialog.message('Gerando seus códigos...');
+        $('#sse li').remove();
+        var posting = $.post( "/ss", {"q":$("#quantidade").val(),"t":$("#MoipWidget").attr("data-token")} );
+        posting.done(function( data ) {
+            for( var codigo in data.codigos){
+                $("#sse").append(
+                    $("<li>").text(data.codigos[codigo]))
+            }
+            waitingDialog.hide();
+            $('#confirmpagto').modal('show');
+            // alert('Sucesso no pagto\n' + JSON.stringify(data));
+            // window.open(data.url);
+            limpaFormGeral();
+        });
+    }
+    moipError = function(data){
+        waitingDialog.hide();
+        toggleOverlay();
+        alert('Falha no pagto\n' + data.message);
+        // alert('Falha no pagto\n' + JSON.stringify(data));
+    }
+    var pagarMoip = function(settings){ //*AQUI VOCÊ DEVE COLOCAR O NOME DA FUNCAO A SER CAHAMADO
+      MoipWidget(settings);//*AQUI VOCÊ DEVE SETAR O JSON PARA QUE O MOIP PROCESSE
+    }
 
     $('#tofeaturettes').click(function(){
         $('html, body').animate({
@@ -368,8 +498,8 @@ $(document).ready(function(){
     var showCardType = function(){
         $(".card-picture").addClass("escondido");
         var card = moip.creditCard.cardType($(this).val());
+        $("#cardtype").val(card);
         if(card != null && card != undefined){
-            // console.log(card.brand);
             $("#c"+card.brand.toLowerCase()).removeClass("escondido");
         }else{
             $("#ccartao").removeClass("escondido");
@@ -386,15 +516,18 @@ $(document).ready(function(){
         if( qtd != null && qtd > 0 ){
             if( $.md5( cupom.toLowerCase() ) == CP_DES ){
                 $(".valores").removeClass("escondido");
-                $("#vlrunit").val("R$ "+VL_ING+" (até "+VL_DES+"% de desconto)")
-                $("#vlrtotal").val("R$ " + (qtd * VL_ING) )
+                $(".infocartao").removeClass("escondido");
+                $("#vlrunit").val( formatCurrency(VL_ING)+" (até "+VL_DES+"% de desconto)")
+                $("#vlrtotal").val( formatCurrency(qtd * VL_ING) )
             }else{
                 if( $.md5( cupom.toLowerCase() ) == CP_FRE ){
                     $(".valores").removeClass("escondido");
+                    $(".infocartao").addClass("escondido");
                     $("#vlrunit").val("R$ 0,00 (100% de desconto)")
                     $("#vlrtotal").val("R$ 0,00")
                 }else{
                     $(".valores").addClass("escondido");
+                    $(".infocartao").removeClass("escondido");
                 }
             }
         }else{
@@ -411,6 +544,7 @@ $(document).ready(function(){
     $('#nro').mask('#######0',maskOpt);
     $('#cpf').mask('000.000.000-00',maskOpt);
     $('#nrocartao').mask('0000-0000-0000-0000',maskOpt);
+    $('#data_nascimento').mask('00/00/0000',maskOpt);
     $('#data_expiracao').mask('00/0000',maskOpt);
     $('#cod_seguranca').mask('000',maskOpt);
     var SPMaskBehavior = function (val) {
@@ -485,53 +619,53 @@ $(document).ready(function(){
 
     /* ==================================
 	   Hero Form Validation
-	=====================================*/
-	$('#hero-submit').click(function(e){
+	// =====================================*/
+	// $('#hero-submit').click(function(e){
 
-        // Stop form submission & check the validation
-        e.preventDefault();
+ //        // Stop form submission & check the validation
+ //        e.preventDefault();
 
-        // Variable declaration
-        var error = false;
-        var fname = $('#hero-fname').val();
-        var email = $('#hero-email').val();
-        var username = $('#hero-username').val();
+ //        // Variable declaration
+ //        var error = false;
+ //        var fname = $('#hero-fname').val();
+ //        var email = $('#hero-email').val();
+ //        var username = $('#hero-username').val();
 
-     	// Form field validation
-        if(fname.length == 0){
-            var error = true;
-            $('#hero-fname').parent('div').addClass('field-error');
-        }else{
-            $('#hero-fname').parent('div').removeClass('field-error');
-        }
-        if(email.length == 0 || email.indexOf('@') == '-1'){
-            var error = true;
-            $('#hero-email').parent('div').addClass('field-error');
-        }else{
-            $('#hero-email').parent('div').removeClass('field-error');
-        }
-        if(username.length == 0){
-            var error = true;
-            $('#hero-username').parent('div').addClass('field-error');
-        }else{
-            $('#hero-username').parent('div').removeClass('field-error');
-        }
+ //     	// Form field validation
+ //        if(fname.length == 0){
+ //            var error = true;
+ //            $('#hero-fname').parent('div').addClass('field-error');
+ //        }else{
+ //            $('#hero-fname').parent('div').removeClass('field-error');
+ //        }
+ //        if(email.length == 0 || email.indexOf('@') == '-1'){
+ //            var error = true;
+ //            $('#hero-email').parent('div').addClass('field-error');
+ //        }else{
+ //            $('#hero-email').parent('div').removeClass('field-error');
+ //        }
+ //        if(username.length == 0){
+ //            var error = true;
+ //            $('#hero-username').parent('div').addClass('field-error');
+ //        }else{
+ //            $('#hero-username').parent('div').removeClass('field-error');
+ //        }
 
-        if(error == true){
-        	$('#hero-error-notification').addClass('show-up');
-        }else{
-           $('#hero-error-notification').removeClass('show-up');
-        }
+ //        if(error == true){
+ //        	$('#hero-error-notification').addClass('show-up');
+ //        }else{
+ //           $('#hero-error-notification').removeClass('show-up');
+ //        }
 
-        if(error == false){
-            $.post("hero-form.php", $("#register-form").serialize(),function(result){
-                if(result == 'sent'){
-                    $('#hero-success-notification').addClass('show-up');
-                    $('#hero-submit').addClass('disabled');
-                }
-            });
-        }
-    });
+ //        if(error == false){
+ //            $.post("hero-form.php", $("#register-form").serialize(),function(result){
+ //                if(result == 'sent'){
+ //                    $('#hero-success-notification').addClass('show-up');
+ //                    $('#hero-submit').addClass('disabled');
+ //                }
+ //            });
+ //        }
+ //    });
 
 
 	// Function to close the Notification
