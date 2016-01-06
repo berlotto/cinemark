@@ -7,6 +7,7 @@ from moipy import Moip
 from hashlib import md5
 from cinemas import CINEMAS
 from database import db_session, create, Venda, SuperSaver
+from simpleauth import requires_auth
 
 #Temporatio
 from random import choice
@@ -30,6 +31,7 @@ def shutdown_session(exception=None):
 
 #============================================================================
 @app.route("/background",methods=("GET",))
+@requires_auth
 def background():
     vendas = Venda.query.filter(Venda.falhou == False).all()
     return render_template(
