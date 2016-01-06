@@ -25,3 +25,14 @@ aplicação
     $ python
     >>> import os
     >>> os.urandom(24)
+
+## Banco de dados
+
+Configure em "config.py" a url de conexão ao banco
+
+Depois execute um terminal python simples e os comandos abaixo:
+
+    >>> from app.database import init_db
+    >>> init_db()
+
+Feito! O banco de dados estará criado.

@@ -414,8 +414,8 @@ function formatCurrency(total) {
         }
 
         if(error == false){
-            toggleOverlay();
             waitingDialog.show('Aguarde...');
+            // toggleOverlay();
 
             // Get some values from elements on the page:
             var $form = $("#contact-form"),
@@ -453,9 +453,15 @@ function formatCurrency(total) {
         }
     });
 
-    var limpaFormGeral = function(){
-        // $('#sse li').remove();
-        $("#contact-form").find("input[type=text], input[type=email],  input[type=number], textarea").val("");
+    var limpaFormGeral = function(top){
+        if(top){
+            $("#contact-form").
+                find("input[type=text], input[type=email],  input[type=number], textarea").
+                not("#quantidade, #cupom").
+                val("");
+        }else{
+            $("#contact-form").find("input[type=text], input[type=email],  input[type=number], textarea").val("");
+        }
         $(".valores").addClass("escondido");
     }
 
@@ -479,6 +485,8 @@ function formatCurrency(total) {
             // alert('Sucesso no pagto\n' + JSON.stringify(data));
             // window.open(data.url);
             limpaFormGeral();
+            reiniciarform();
+            toggleOverlay();
         });
     }
     moipError = function(data){
@@ -511,35 +519,62 @@ function formatCurrency(total) {
     $("#nrocartao").change(showCardType);
     $("#nrocartao").change();
 
-    var priceValue = function(){
+    var priceValue = function(event){
+
+        event.preventDefault();
+
         var qtd = $("#quantidade").val();
-        if(qtd<0){ $("#quantidade").val(0) }
-        if(qtd>10){ $("#quantidade").val(10) }
+        if(qtd<1 || qtd>10){
+            alert("Quantidade inválida. Deve ser entre 1 e 10");
+            $("#quantidade").focus()
+            return;
+        }
         var cupom = $("#cupom").val();
-        if( qtd != null && qtd > 0 ){
+        if( qtd != null && qtd > 0 && qtd <= 10 && cupom.length > 0 ){
             if( $.md5( cupom.toLowerCase() ) == CP_DES ){
                 $(".valores").removeClass("escondido");
+                $(".dadospessoais").removeClass("escondido");
                 $(".infocartao").removeClass("escondido");
                 $("#vlrunit").val( formatCurrency(VL_ING)+" (até "+VL_DES+"% de desconto)")
                 $("#vlrtotal").val( formatCurrency(qtd * VL_ING) )
+                $("#nome").focus();
+
+                $("#submit").removeClass("escondido");
             }else{
                 if( $.md5( cupom.toLowerCase() ) == CP_FRE ){
                     $(".valores").removeClass("escondido");
+                    $(".dadospessoais").removeClass("escondido");
                     $(".infocartao").addClass("escondido");
                     $("#vlrunit").val("R$ 0,00 (100% de desconto)")
                     $("#vlrtotal").val("R$ 0,00")
+                    $("#nome").focus();
+
+                    $("#submit").removeClass("escondido");
+
                 }else{
+                    $(".dadospessoais").addClass("escondido");
                     $(".valores").addClass("escondido");
-                    $(".infocartao").removeClass("escondido");
+                    $(".infocartao").addClass("escondido");
+
+                    alert("Cupom inválido!")
+                    $("#cupom").focus();
                 }
             }
         }else{
             $(".valores").addClass("escondido");
         }
     };
-    $("#cupom").change(priceValue);
-    $("#quantidade").change(priceValue);
-    priceValue();
+
+    var reiniciarform = function(){
+        $(".dadospessoais").addClass("escondido");
+        $(".valores").addClass("escondido");
+        $(".infocartao").addClass("escondido");
+        $("#submit").addClass("escondido");
+        limpaFormGeral(true);
+    }
+    $("#cupom").change(reiniciarform);
+    $("#quantidade").change(reiniciarform);
+    $("#validar").click(priceValue);
 
     var maskOpt = {selectOnFocus: true};
     $('#quantidade').mask('00',maskOpt);

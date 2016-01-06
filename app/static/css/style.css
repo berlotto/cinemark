@@ -1107,7 +1107,7 @@ ul.pricing .price.best-value:hover {
 }
 
 .overlay-scale.open {
-  z-index: 99999;
+  z-index: 1000;
   visibility: visible;
   opacity: 1;
   -webkit-transition: -webkit-transform 0.3s, opacity 0.3s;

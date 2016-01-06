@@ -6,6 +6,7 @@ from flask import Flask, render_template, jsonify, request
 from moipy import Moip
 from hashlib import md5
 from cinemas import CINEMAS
+from database import db_session, create, Venda
 
 #Temporatio
 from random import choice
@@ -14,11 +15,12 @@ import string
 app = Flask(__name__)
 app.config.from_object('config')
 
-# Metodo que gerencia os IDs de transcoes conforme necessario
-def get_next_trans_id():
-    uid = ''.join([ choice(string.letters+string.digits) for x in range(6) ])
-    return uid
+#============================================================================
+@app.teardown_appcontext
+def shutdown_session(exception=None):
+    db_session.remove()
 
+#============================================================================
 def get_super_savers(qtd):
     l = []
     for nro in range(int(qtd)):
@@ -26,7 +28,7 @@ def get_super_savers(qtd):
         l.append(uid)
     return l
 
-
+#============================================================================
 @app.route("/", methods=("GET",))
 def index():
     if app.config.get("DEBUG"):
@@ -46,6 +48,7 @@ def index():
         valor_desconto=desconto_dado,
         cinemas=CINEMAS)
 
+#============================================================================
 @app.route("/ss", methods=("POST",))
 def ss():
     resposta = {
@@ -53,11 +56,22 @@ def ss():
     }
     return jsonify(resposta)
 
+#============================================================================
 @app.route("/contact", methods=("POST",))
 def contact():
 
     dados = request.form
     tudogratis = False
+
+    venda = Venda(dados.get("nome"))
+    venda.quantidade = dados.get("quantidade")
+    venda.telefone_cliente = dados.get("telefone")
+    venda.email_cliente = dados.get("email")
+    venda.cpf_cliente = dados.get("cpf")
+    venda.email_enviado = False
+    venda.cupom_usado = dados.get('cupom')
+    venda.valor_pago = int(dados.get("quantidade")) * app.config.get("VALOR_INGRESSO")
+    create(venda)
 
     if dados.get("cupom").lower() == app.config.get("CUPOM_FREE"):
         #Aqui não necessita pagar nada e somente retorna ok para a tela
@@ -68,6 +82,8 @@ def contact():
             'token':'',
             "tudogratis":True
         }
+
+        venda
     else:
 
         moip = Moip(app.config.get("MOIP_RAZAO_PAGAMENTO"))
@@ -87,7 +103,7 @@ def contact():
             Nome=dados.get("nome"),
             Email=dados.get("email"),
             # Apelido='vitalbh',
-            IdPagador='CLI_003',
+            IdPagador=str(venda.id),
             EnderecoCobranca=endereco
         )
 
@@ -115,16 +131,20 @@ def contact():
 
         moip.set_valor( str(int(dados.get("quantidade")) * app.config.get("VALOR_INGRESSO")) )
         moip.set_data_vencimento('2016-01-20')
-        moip.set_id_proprio(get_next_trans_id())
+        moip.set_id_proprio(venda.id_proprio)
         moip.set_checkout_transparente()
         print "Enviando pagto..."
         moip.envia()
         resposta = moip.get_resposta() # {sucesso:'Sucesso','token':'KJHSDASKD392847293AHFJKDSAH'}
+        if resposta['sucesso'] == "Sucesso":
+            venda.token_moip = resposta['token']
+            create(venda)
         print "Resposta:", resposta
         resposta['dados_retorno'] = dados_retorno
         resposta['tudogratis'] = False
 
     return jsonify(resposta)
 
+#============================================================================
 if __name__ == '__main__':
     app.run("0.0.0.0", port=8000)

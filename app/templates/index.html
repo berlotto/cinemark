@@ -238,18 +238,21 @@
 									<div class="col-lg-2 col-md-2 text-left">
 										<h4>Quantidade:</h4>
 									</div>
-									<div class="col-lg-3 col-md-3">
+									<div class="col-lg-2 col-md-2">
 										<div class="required-field">
 											<input name="quantidade" id="quantidade" class="contact-input" type="number" placeholder="Informe a quantidade">
 										</div> <!--/ .col-lg-6 -->
 									</div> <!--/ .col-lg-6 -->
-									<div class="col-lg-4 col-md-4 text-right">
-										<h4>Cupom de desconto:</h4>
+									<div class="col-lg-2 col-md-2 text-right">
+										<h5>Cupom de desconto:</h5>
 									</div>
-									<div class="col-lg-3 col-md-3">
+									<div class="col-lg-4 col-md-4">
 										<div class="required-field">
 											<input name="cupom" id="cupom" class="contact-input" type="text"  placeholder="Insira o Cupom de desconto">
 										</div> <!--/ .required-field -->
+									</div>
+									<div class="col-lg-2 col-md-2">
+										<button id="validar" type="button" class="btn btn-primary btn-lg">Validar</button>
 									</div>
 								</div> <!--/ row -->
 								<div class="row valores escondido">
@@ -271,13 +274,13 @@
 										<input name="vlrtotal" id="vlrtotal" disabled class="contact-input"  type="text" placeholder="R$ XX,XX">
 									</div>
 								</div>
-								<div class="row">
+								<div class="row dadospessoais escondido">
 									<div class="col-lg-12 col-md-12">
 										<h2>Informe seus dados</h2>
 									</div>
 								</div>
 
-								<div class="row">
+								<div class="row dadospessoais escondido">
 
 									<div class="col-lg-8 col-md-8">
 										<div class="required-field">
@@ -292,7 +295,7 @@
 									</div>
 								</div>
 
-								<div class="row">
+								<div class="row dadospessoais escondido">
 									<div class="col-lg-4 col-md-4">
 										<div class="required-field">
 											<input name="email" id="email" class="contact-input" type="email" placeholder="Seu e-mail">
@@ -311,7 +314,7 @@
 									</div>
 
 								</div>
-								<div class="row">
+								<div class="row dadospessoais escondido">
 									<div class="col-lg-3 col-md-3">
 										<div class="required-field">
 											<input name="cep" id="cep" class="contact-input" type="text" placeholder="Seu CEP">
@@ -329,7 +332,7 @@
 										<input name="complemento" id="complemento" class="contact-input" type="text" placeholder="Complemento">
 									</div>
 								</div>
-								<div class="row">
+								<div class="row dadospessoais escondido">
 									<div class="col-lg-3 col-md-3">
 											<input name="bairro" id="bairro" class="contact-input" readonly type="text" placeholder="Bairro">
 									</div>
@@ -340,12 +343,12 @@
 											<input name="uf" id="uf" class="contact-input" readonly type="text" placeholder="Estado">
 									</div>
 								</div>
-								<div class="row infocartao">
+								<div class="row infocartao escondido">
 									<div class="col-lg-12 col-md-12">
 										<h2>Informe os dados do seu cartão de crédito</h2>
 									</div>
 								</div>
-								<div class="row infocartao">
+								<div class="row infocartao escondido">
 									<div class="col-lg-4 col-md-4">
 										<div class="required-field">
 											<input name="nrocartao" id="nrocartao" class="contact-input"  type="text" placeholder="Número do cartão">
@@ -382,7 +385,7 @@
 
 									<div class="col-lg-12 col-md-12 all-caps centered">
 
-										<button id="submit" type="submit" class="submit-btn">COMPRAR</button>
+										<button id="submit" type="submit" class="submit-btn escondido">COMPRAR</button>
 
 									</div> <!--/ .col-lg-12 -->
 
