@@ -408,9 +408,7 @@ function formatCurrency(total) {
         // }
 
         if(error == true){
-        	$('#error-notification').addClass('show-up');
-        }else{
-           $('#error-notification').removeClass('show-up');
+            mostrarMensagem("Falta preencher campos obrigatórios, por favor verifique o(s) campo(s) marcados em vermelho.");
         }
 
         if(error == false){
@@ -522,16 +520,23 @@ function formatCurrency(total) {
     $("#nrocartao").change(showCardType);
     $("#nrocartao").change();
 
+    var mostrarMensagem = function(mensagem){
+        $("#subscribe-error-notification .mensagem").html(mensagem);
+        $("#subscribe-error-notification").addClass('show-up');
+        setTimeout(function () {
+            $("#subscribe-error-notification").removeClass('show-up');
+        }, 4000);
+    }
+
     var priceValue = function(event){
 
         event.preventDefault();
 
+        validaQuantidade();
+        validaCupom();
+
         var qtd = $("#quantidade").val();
-        if(qtd<1 || qtd>10){
-            alert("Quantidade inválida. Deve ser entre 1 e 10");
-            $("#quantidade").focus()
-            return;
-        }
+
         var cupom = $("#cupom").val();
         if( qtd != null && qtd > 0 && qtd <= 10 && cupom.length > 0 ){
             if( $.md5( cupom.toLowerCase() ) == CP_DES ){
@@ -559,7 +564,7 @@ function formatCurrency(total) {
                     $(".valores").addClass("escondido");
                     $(".infocartao").addClass("escondido");
 
-                    alert("Cupom inválido!")
+                    alert("Cupom inválido!");
                     $("#cupom").focus();
                 }
             }
@@ -575,8 +580,52 @@ function formatCurrency(total) {
         $("#submit").addClass("escondido");
         limpaFormGeral(true);
     }
+    var validaQuantidade = function(){
+        var qtd = $("#quantidade").val();
+        if(qtd<1 || qtd>10){
+            $('#quantidade').parent('div').addClass('field-error');
+            mostrarMensagem("Quantidade inválida. Deve ser entre 1 e 10");
+            $("#quantidade").focus()
+            return;
+        }else{
+            $('#quantidade').parent('div').removeClass('field-error');
+        }
+    }
+    var validaCupom = function(){
+        var cupom = $("#cupom").val();
+        if( $.md5( cupom.toLowerCase() ) != CP_DES &&
+            $.md5( cupom.toLowerCase() ) != CP_FRE ){
+            $('#cupom').parent('div').addClass('field-error');
+            mostrarMensagem("Cupom inválido!");
+            $("#cupom").focus()
+            return;
+        }else{
+            $('#cupom').parent('div').removeClass('field-error');
+        }
+    }
+    var validaCampoObrigatorio = function(){
+        var valor = $(this).val();
+        if(valor.length == 0){
+            $(this).parent('div').addClass('field-error');
+        }else{
+            $(this).parent('div').removeClass('field-error');
+        }
+    }
+    $("#nome").blur(validaCampoObrigatorio);
+    $("#telefone").blur(validaCampoObrigatorio);
+    $("#email").blur(validaCampoObrigatorio);
+    $("#data_nascimento").blur(validaCampoObrigatorio);
+    $("#cpf").blur(validaCampoObrigatorio);
+    $("#nro").blur(validaCampoObrigatorio);
+    $("#nrocartao").blur(validaCampoObrigatorio);
+    $("#nome_cartao").blur(validaCampoObrigatorio);
+    $("#data_expiracao").blur(validaCampoObrigatorio);
+    $("#codseguranca").blur(validaCampoObrigatorio);
+
     $("#cupom").change(reiniciarform);
+    $("#cupom").blur(validaCupom);
     $("#quantidade").change(reiniciarform);
+    $("#quantidade").blur(validaQuantidade);
     $("#validar").click(priceValue);
 
     var maskOpt = {selectOnFocus: true};
@@ -641,19 +690,20 @@ function formatCurrency(total) {
                             else {
                                 //CEP pesquisado não foi encontrado.
                                 limpa_formulário_cep();
-                                $('#cep-error').addClass('show-up');
+                                mostrarMensagem("Seu cep não foi encontrado. Corrija e tente novamente.");
                             }
                         });
                     } //end if.
                     else {
                         //cep é inválido.
                         limpa_formulário_cep();
-                        $('#cep-error').addClass('show-up');
+                        mostrarMensagem("Seu cep está inválido. Corrija e tente novamente.");
                     }
                 } //end if.
                 else {
                     //cep sem valor, limpa formulário.
                     limpa_formulário_cep();
+                    mostrarMensagem("Seu cep não foi informado.");
                 }
     })
 
