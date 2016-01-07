@@ -288,6 +288,12 @@ function formatCurrency(total) {
         // Stop form submission & check the validation
         e.preventDefault();
 
+        if( $("#submit").hasClass("escondido") ){
+            $("#validar").click();
+            return;
+        }
+        console.log("submiting....");
+
         // Variable declaration
         var error = false;
         var quantidade = $('#quantidade').val();
@@ -564,7 +570,6 @@ function formatCurrency(total) {
                     $(".valores").addClass("escondido");
                     $(".infocartao").addClass("escondido");
 
-                    alert("Cupom inválido!");
                     $("#cupom").focus();
                 }
             }
