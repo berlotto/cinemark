@@ -3211,3 +3211,9 @@ ul.footer-social li a {
 .moiplogo{
 	max-height: 50px;
 }
+
+#vlrtotal,
+#vlrunit{
+	background-color: #292C33;
+	font-size: 24px;
+}
