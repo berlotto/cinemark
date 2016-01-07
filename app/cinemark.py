@@ -8,13 +8,18 @@ from hashlib import md5
 from cinemas import CINEMAS
 from database import db_session, create, Venda, SuperSaver
 from simpleauth import requires_auth
+from flask_mail import Mail, Message
+from datetime import datetime as dt
+import os
 
 #Temporatio
-from random import choice
-import string
+#from random import choice
+#import string
 
 app = Flask(__name__)
 app.config.from_object('config')
+
+mail = Mail(app)
 
 #============================================================================
 @app.teardown_appcontext
@@ -33,12 +38,16 @@ def shutdown_session(exception=None):
 @app.route("/background",methods=("GET",))
 @requires_auth
 def background():
-    vendas = Venda.query.filter(Venda.falhou == False).all()
+    total = len(Venda.query.all())
+    vendas = Venda.query.filter(Venda.falhou == False).filter(Venda.email_enviado == True).all()
     vendas_falhas = Venda.query.filter(Venda.falhou == True).all()
+    vendas_sem_email = Venda.query.filter(Venda.falhou == False).filter(Venda.email_enviado == False).all()
     return render_template(
         "listagem.html",
         vendas=vendas,
         vendas_falhas=vendas_falhas,
+        vendas_sem_email=vendas_sem_email,
+        total=total,
         )
 
 #============================================================================
@@ -62,6 +71,35 @@ def index():
         cinemas=CINEMAS)
 
 #============================================================================
+def send_mail(venda):
+    import pdb; pdb.set_trace()
+    text_file = open(os.path.dirname(os.path.realpath(__file__))+"/email.txt")
+    agora = dt.now()
+    ss = venda.super_savers
+    dados={
+        "nome_cliente": venda.nome_cliente,
+        "numero_pedido": venda.id_proprio,
+        "quantidade": venda.quantidade,
+        "cupons": ss.replace(",","\n"),
+        "prazo_cupos": app.config.get("PRAZO_CUPONS")
+    }
+    mensagem = text_file.read().format(dados)
+    msg = Message(app.config.get("MAIL_SUBJECT"),
+          recipients=[venda.email_cliente])
+    msg.body = mensagem
+    try:
+        mail.send(msg)
+        venda.email_enviado = True
+        venda.data_envio = agora.strftime('%d/%m/%Y %H:%M:%S')
+    except Exception, e:
+        print "Erro ao enviar o email para %s " % venda.email_cliente
+        print e
+        venda.email_enviado = False
+
+    #Atualiza data de envio na base
+    db_session.add(venda)
+    db_session.commit()
+
 @app.route("/ss", methods=("POST",))
 def ss():
 
@@ -81,6 +119,8 @@ def ss():
     db_session.add(venda)
 
     db_session.commit()
+
+    send_mail(venda)
 
     return jsonify(resposta)
 

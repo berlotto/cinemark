@@ -1,18 +1,16 @@
 ASSUNTO:
 
-Olá [NOMEDAPESSOA]!
+Olá {nome_cliente}!
 
-Confirmado o pagamento para o pedido de número [NUMERODOPEDIDO]  com  [QUANTIDADEDECUPONS] cupons.
+Confirmado o pagamento para o pedido de número {numero_pedido}  com  {quantidade} cupons.
 
 Segue seus cupons SUPER SAVER ELETRÔNICO:
 
-[CUPOM1]
-[CUPOM2]
-[CUPOM...]
+{cupons}
 
 Agora basta acessar o site www.ingresso.com e reservar sua sessão em qualquer Sala Cinemark 2D.
 
-Lembre-se que o cupons devem ser utilizados até [DATA FINAL QUE MUDA A CADA 3 MESES] .
+Lembre-se que o cupons devem ser utilizados até {prazo_cupons} .
 
 Se tiver dúvidas em como utilizar os cupons, clique aqui para ver o procedimento de troca do ingresso.
 

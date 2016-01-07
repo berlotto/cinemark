@@ -452,8 +452,9 @@ function formatCurrency(total) {
                     }
                 }else{
                     waitingDialog.hide();
-                    toggleOverlay();
-                    mostrarMensagem('Ocorreu uma falha no pagamento', true);
+                    // toggleOverlay();
+                    //Neste caso em data.token vem a mensagem de erro
+                    mostrarMensagem('Ocorreu uma falha no pagamento: '+data.token, true);
                 }
             });
         }
@@ -498,8 +499,8 @@ function formatCurrency(total) {
     }
     moipError = function(data){
         waitingDialog.hide();
-        toggleOverlay();
-        alert('Falha no pagto\n' + data.message);
+        // toggleOverlay();
+        mostrarMensagem('Falha no pagto: ' + data.Mensagem);
         // alert('Falha no pagto\n' + JSON.stringify(data));
     }
     var pagarMoip = function(settings){ //*AQUI VOCÊ DEVE COLOCAR O NOME DA FUNCAO A SER CAHAMADO

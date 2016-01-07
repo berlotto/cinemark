@@ -22,7 +22,7 @@
 <div class="panel panel-default">
   <div class="panel-heading">
     <h3 class="panel-title">
-        Listagem das vendas já feitas <span class="badge">{{vendas|length}}</span>
+        Listagem das vendas completas <span class="badge">{{vendas|length}}</span> de <span class="badge">{{total}}</span>
     </h3>
   </div>
   <div class="panel-body">
@@ -62,9 +62,13 @@
                     <td>{{venda.data_envio or ""}}</td>
                     <td>{{venda.cupom_usado}}</td>
                     <td>
-                    {%for ss in venda.super_savers.split(",")%}
-                        <span class="label label-info">{{ss}}</span>
-                    {%endfor%}
+                    {%if venda.super_savers%}
+                        {%for ss in venda.super_savers.split(",")%}
+                            <span class="label label-info">{{ss}}</span>
+                        {%endfor%}
+                    {%else%}
+                        &nbsp;
+                    {%endif%}
                     </td>
                     <td>{{venda.valor_pago}}</td>
                     <td>
@@ -82,11 +86,75 @@
   </div>
 </div>
 
-{%if vendas_falhas%}
 <div class="panel panel-default">
   <div class="panel-heading">
     <h3 class="panel-title">
-        Listagem das vendas que falharam <span class="badge">{{vendas_falhas|length}}</span>
+        Listagem das vendas que não enviou email <span class="badge">{{vendas_sem_email|length}}</span> de <span class="badge">{{total}}</span>
+    </h3>
+  </div>
+  <div class="panel-body">
+
+        <div class="table-responsive">
+            <table class="table table-condensed table-bordered table-striped">
+
+                <tr>
+                    <th>#</th>
+                    <th>IdProprio</th>
+                    <th>Data/Hr</th>
+                    <th>Qtd</th>
+                    <th>Cliente</th>
+                    <th>Tel</th>
+                    <th>Email</th>
+                    <th>CPF</th>
+                    <th>Cupom</th>
+                    <th>SS</th>
+                    <th>Valor</th>
+                    <th>Forma</th>
+                </tr>
+
+
+            {%for venda in vendas_sem_email%}
+                <tr>
+                    <td>{{venda.id}}</td>
+                    <td>{{venda.id_proprio}}</td>
+                    <td>{{venda.data_hora.strftime('%d/%m/%Y %H:%M:%S')}}</td>
+                    <td>{{venda.quantidade}}</td>
+                    <td>{{venda.nome_cliente}}</td>
+                    <td>{{venda.telefone_cliente}}</td>
+                    <td>{{venda.email_cliente}}</td>
+                    <td>{{venda.cpf_cliente}}</td>
+                    <td>{{venda.cupom_usado}}</td>
+                    <td>
+                    {%if venda.super_savers%}
+                        {%for ss in venda.super_savers.split(",")%}
+                            <span class="label label-info">{{ss}}</span>
+                        {%endfor%}
+                    {%else%}
+                        &nbsp;
+                    {%endif%}
+                    </td>
+                    <td>{{venda.valor_pago}}</td>
+                    <td>
+                        {%if venda.pagamento == "Free" %}
+                            <span class="label label-success">{{venda.pagamento}}</span>
+                        {%else%}
+                            <span class="label label-primary">{{venda.pagamento}}</span>
+                        {%endif%}
+                    </td>
+
+                </tr>
+            {%endfor%}
+            </table>
+        </div>
+
+  </div>
+</div>
+
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">
+        Listagem das vendas que falharam <span class="badge">{{vendas_falhas|length}}</span> de <span class="badge">{{total}}</span>
     </h3>
   </div>
   <div class="panel-body">
@@ -126,9 +194,13 @@
                     <td>{{venda.data_envio or ""}}</td>
                     <td>{{venda.cupom_usado}}</td>
                     <td>
-                    {%for ss in venda.super_savers.split(",")%}
-                        <span class="label label-info">{{ss}}</span>
-                    {%endfor%}
+                    {%if venda.super_savers%}
+                        {%for ss in venda.super_savers.split(",")%}
+                            <span class="label label-info">{{ss}}</span>
+                        {%endfor%}
+                    {%else%}
+                        &nbsp;
+                    {%endif%}
                     </td>
                     <td>{{venda.valor_pago}}</td>
                     <td>
@@ -146,7 +218,7 @@
 
   </div>
 </div>
-{%endif%}
+
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 

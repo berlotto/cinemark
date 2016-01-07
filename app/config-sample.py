@@ -20,7 +20,28 @@ VALOR_INGRESSO=9.90
 # para base de cálculo da porcentagem de desconto oferecida
 VALOR_ORIGINAL=28
 
+#Simples user e senha para acesso a listagem das vendas
+AUTH_USER = "colab"
+AUTH_PASSWORD = "secret"
+
+#----------------------------------------------------------------------------
+#MAIL_SERVER : default ‘localhost’
+#MAIL_PORT : default 25
+#MAIL_USE_TLS : default False
+#MAIL_USE_SSL : default False
+#MAIL_DEBUG : default app.debug
+#MAIL_USERNAME : default None
+#MAIL_PASSWORD : default None
+#MAIL_DEFAULT_SENDER : default None
+#MAIL_MAX_EMAILS : default None
+#MAIL_SUPPRESS_SEND : default app.testing
+#MAIL_ASCII_ATTACHMENTS : default False
+
+MAIL_SENDER = "services@colaboradores.com.br"
+
 #----------------------------------------------------------------------------
 #Provavelmente você não necessita alterar estas linhas
 MOIP_SANDBOX_URL="https://desenvolvedor.moip.com.br/sandbox"
 MOIP_PROD_URL="https://www.moip.com.br"
+
+DATABASE_URL='sqlite:////tmp/test.db'
