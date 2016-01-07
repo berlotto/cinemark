@@ -13,6 +13,7 @@ MOIP_RAZAO_PAGAMENTO="Colaboradores - compra de ingresso"
 # Digite os cupons sempre em MInusculo
 CUPOM_DESCONTO="colaboradores"
 CUPOM_FREE="colaboradoresfree#"
+PRAZO_CUPONS="10/03/2016"
 
 # Valor da venda do infresso neste site
 VALOR_INGRESSO=9.90
@@ -37,7 +38,7 @@ AUTH_PASSWORD = "secret"
 #MAIL_SUPPRESS_SEND : default app.testing
 #MAIL_ASCII_ATTACHMENTS : default False
 
-MAIL_SENDER = "services@colaboradores.com.br"
+MAIL_SUBJECT = "Obrigado por comprar conosco - Colaboradores"
 
 #----------------------------------------------------------------------------
 #Provavelmente você não necessita alterar estas linhas
