@@ -34,9 +34,11 @@ def shutdown_session(exception=None):
 @requires_auth
 def background():
     vendas = Venda.query.filter(Venda.falhou == False).all()
+    vendas_falhas = Venda.query.filter(Venda.falhou == True).all()
     return render_template(
         "listagem.html",
-        vendas=vendas
+        vendas=vendas,
+        vendas_falhas=vendas_falhas,
         )
 
 #============================================================================
