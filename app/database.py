@@ -30,7 +30,7 @@ class Venda(Base):
     # id_pagador - Identificador que vai junto à venda no Moip
     id = Column(Integer, primary_key=True)
     #Id da transacao que vai junto à venda no Moip
-    id_proprio = Column(String, unique=True)
+    id_proprio = Column(String(100), unique=True)
     data_hora = Column(DateTime)
     quantidade = Column(Integer)
     nome_cliente = Column(String(200))

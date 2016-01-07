@@ -72,7 +72,6 @@ def index():
 
 #============================================================================
 def send_mail(venda):
-    import pdb; pdb.set_trace()
     text_file = open(os.path.dirname(os.path.realpath(__file__))+"/email.txt")
     agora = dt.now()
     ss = venda.super_savers
@@ -81,9 +80,9 @@ def send_mail(venda):
         "numero_pedido": venda.id_proprio,
         "quantidade": venda.quantidade,
         "cupons": ss.replace(",","\n"),
-        "prazo_cupos": app.config.get("PRAZO_CUPONS")
+        "prazo_cupons": app.config.get("PRAZO_CUPONS")
     }
-    mensagem = text_file.read().format(dados)
+    mensagem = text_file.read().format(**dados)
     msg = Message(app.config.get("MAIL_SUBJECT"),
           recipients=[venda.email_cliente])
     msg.body = mensagem
