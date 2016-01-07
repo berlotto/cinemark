@@ -418,7 +418,7 @@ function formatCurrency(total) {
         }
 
         if(error == false){
-            waitingDialog.show('Aguarde...');
+            waitingDialog.show('Aguarde enquanto validamos o pagamento e geramos seus Super Savers Eletrônico');
             // toggleOverlay();
 
             // Get some values from elements on the page:
@@ -436,7 +436,7 @@ function formatCurrency(total) {
                 if(data.sucesso == 'Sucesso'){
                     if(data.tudogratis == false){
                         $("#infopagto").removeClass("escondido");
-                        waitingDialog.message('Confirmando pagamento...');
+                        waitingDialog.message('Apenas mais um instante...');
                         //Show confirm dialog
                         // $("#ctoken").html(data.token);
                         $("#MoipWidget").attr("data-token", data.token);
@@ -453,7 +453,7 @@ function formatCurrency(total) {
                 }else{
                     waitingDialog.hide();
                     toggleOverlay();
-                    alert('Falha no pagto\n' + data.token);
+                    mostrarMensagem('Ocorreu uma falha no pagamento', true);
                 }
             });
         }
@@ -526,12 +526,14 @@ function formatCurrency(total) {
     $("#nrocartao").change(showCardType);
     $("#nrocartao").change();
 
-    var mostrarMensagem = function(mensagem){
+    var mostrarMensagem = function(mensagem, manterAberto){
         $("#subscribe-error-notification .mensagem").html(mensagem);
         $("#subscribe-error-notification").addClass('show-up');
-        setTimeout(function () {
-            $("#subscribe-error-notification").removeClass('show-up');
-        }, 4000);
+        if(!manterAberto){
+            setTimeout(function () {
+                $("#subscribe-error-notification").removeClass('show-up');
+            }, 4000);
+        }
     }
 
     var priceValue = function(event){
