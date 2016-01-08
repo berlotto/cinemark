@@ -200,6 +200,7 @@ def contact():
             create(venda)
         else:
             venda.falhou = True
+            venda.token_moip = resposta['token'] # Neste caso vem a mensagem de erro
             create(venda)
         print "Resposta:", resposta
         resposta['dados_retorno'] = dados_retorno

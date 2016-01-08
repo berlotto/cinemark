@@ -173,6 +173,7 @@
                     <th>CPF</th>
                     <th>Enviado?</th>
                     <th>Enviado Em</th>
+                    <th>Token/Erro</th>
                     <th>Cupom</th>
                     <th>SS</th>
                     <th>Valor</th>
@@ -192,6 +193,7 @@
                     <td>{{venda.cpf_cliente}}</td>
                     <td>{{venda.email_enviado}}</td>
                     <td>{{venda.data_envio or ""}}</td>
+                    <td>{{venda.token_moip or ""}}</td>
                     <td>{{venda.cupom_usado}}</td>
                     <td>
                     {%if venda.super_savers%}
