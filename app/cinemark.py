@@ -87,6 +87,35 @@ def send_mail(venda):
     db_session.add(venda)
     db_session.commit()
 
+@app.route("/nasp",methods=("POST",))
+def nasp():
+    #Este método é chamado pelo MOIP somente enviando dados dos pagamentos
+    #que ficaram pendentes
+    dados = request.form
+
+    id_transacao = dados.get("id_transacao")
+    status_pagamento = dados.get("status_pagamento")
+
+    if status_pagamento in ("Autorizado", "Concluido"):
+        #Então confirma o pagto e envia os SuperSaver
+        venda = Venda.query.filter( Venda.id_proprio == id_transacao ).first()
+        retorno = SuperSaver.query.filter(SuperSaver.usado == False).limit(venda.quantidade).all()
+        resposta = {
+            "codigos": [ s.cupom for s in retorno ]
+        }
+        #Atualiza os cupons já utilizados
+        for ss in retorno:
+            ss.usado = True
+            db_session.add(ss)
+        venda.super_savers = ",".join([ s.cupom for s in retorno ])
+        db_session.add(venda)
+        db_session.commit()
+
+        send_mail(venda)
+
+    return "Ok"
+
+
 @app.route("/ss", methods=("POST",))
 def ss():
 
@@ -94,7 +123,6 @@ def ss():
     resposta = {
         "codigos": [ s.cupom for s in retorno ]
     }
-
     #Atualiza os cupons já utilizados
     for ss in retorno:
         ss.usado = True
@@ -185,8 +213,11 @@ def contact():
 
         moip.set_credenciais(token=app.config.get("MOIP_TOKEN"),key=app.config.get("MOIP_KEY"))
 
+        import pdb; pdb.set_trace()
         if app.config.get("DEBUG"):
             moip.set_ambiente('sandbox')
+        else:
+            moip.set_ambiente("producao")
 
         moip.set_valor( str(int(dados.get("quantidade")) * app.config.get("VALOR_INGRESSO")) )
         moip.set_data_vencimento('2016-01-20')

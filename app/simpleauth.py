@@ -1,3 +1,6 @@
+# -*- encoding: utf-8 -*-
+# http://flask.pocoo.org/snippets/8/
+
 from functools import wraps
 from flask import request, Response
 from config import AUTH_USER, AUTH_PASSWORD

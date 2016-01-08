@@ -479,28 +479,47 @@ function formatCurrency(total) {
     });
 
     moipSuccess = function(data){
-        waitingDialog.message('Gerando seus códigos...');
-        $('#sse li').remove();
-        var posting = $.post( "/ss", {"q":$("#quantidade").val(),"t":window.venda} );
-        // var posting = $.post( "/ss", {"q":$("#quantidade").val(),"t":$("#MoipWidget").attr("data-token")} );
-        posting.done(function( data ) {
-            for( var codigo in data.codigos){
-                $("#sse").append(
-                    $("<li>").text(data.codigos[codigo]))
-            }
+        console.log("RETORNO DO MOIP")
+        console.log(data);
+
+        if(data.Status == "Cancelado"){
+            // Erro na transacao
             waitingDialog.hide();
-            $('#confirmpagto').modal('show');
-            // alert('Sucesso no pagto\n' + JSON.stringify(data));
-            // window.open(data.url);
-            limpaFormGeral();
-            reiniciarform();
-            toggleOverlay();
-        });
+            if(data.Classificacao.Descricao != null && data.Classificacao.Descricao != ""){
+                mostrarMensagem("Seu pagamento não foi processado: " + data.Classificacao.Descricao);
+            }else{
+                mostrarMensagem("Seu pagamento não foi processado pela instituição.");
+            }
+
+            return;
+        }else if(data.Status == "Autorizado"){
+            waitingDialog.message('Gerando seus códigos...');
+            $('#sse li').remove();
+            var posting = $.post( "/ss", {"q":$("#quantidade").val(),"t":window.venda} );
+            // var posting = $.post( "/ss", {"q":$("#quantidade").val(),"t":$("#MoipWidget").attr("data-token")} );
+            posting.done(function( data ) {
+                console.log(data);
+                for( var codigo in data.codigos){
+                    $("#sse").append(
+                        $("<li>").text(data.codigos[codigo]))
+                }
+                waitingDialog.hide();
+                $('#confirmpagto').modal('show');
+                // alert('Sucesso no pagto\n' + JSON.stringify(data));
+                // window.open(data.url);
+                limpaFormGeral();
+                reiniciarform();
+                toggleOverlay();
+            });
+        }else{
+            waitingDialog.hide();
+            mostrarMensagem("Seu pagamento não foi processado ainda");
+        }
     }
     moipError = function(data){
         waitingDialog.hide();
         // toggleOverlay();
-        mostrarMensagem('Falha no pagto: ' + data.Mensagem);
+        mostrarMensagem('Falha no pagto: ' + data[0].Mensagem);
         // alert('Falha no pagto\n' + JSON.stringify(data));
     }
     var pagarMoip = function(settings){ //*AQUI VOCÊ DEVE COLOCAR O NOME DA FUNCAO A SER CAHAMADO
