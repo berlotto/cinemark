@@ -4,21 +4,23 @@ import os
 # import codecs
 
 texto_email = u"""
-Olá {nome_cliente}!
+Olá {nome_cliente}
 
-Confirmado o pagamento para o pedido de número {numero_pedido}  com  {quantidade} cupons.
+Seus dados foram validados e seu pagamento foi confirmado com sucesso!
 
-Segue seus cupons SUPER SAVER ELETRÔNICO:
+Confira abaixo os códigos dos Cupons Super Saver Eletrônico que deverão ser usados no site da Ingresso.com.
 
 {cupons}
 
-Agora basta acessar o site www.ingresso.com e reservar sua sessão em qualquer Sala Cinemark 2D.
+Acesse agora o site da ingresso.com, escolha um cinemar, filme e horário para reservar sua sessão com o SUPER SAVER ELETRÔNICO acima.
 
-Lembre-se que o cupons devem ser utilizados até {prazo_cupons} .
+Lembre-se que este Cupons devem ser utilizados até o dia {prazo_cupons} e servem para filmes 2D de Cinemas Cinemark.
 
-Se tiver dúvidas em como utilizar os cupons, clique aqui para ver o procedimento de troca do ingresso.
+Caso você tenha dúvidas relacionadas à troca dos Cupons Super Saver Eletrónico, clique <a href="https://cinemafacil.com.br/UtilizacaoSuperSaverEletronicosCinemark.pdf">aqui</a>
+para acessar o passo-a-passo. Ou envie um e-mail para suporte@colaboradores.com.br.
 
-Bom divertimento! =)
+Atenciosamente,
+Equipe Colaboradores
 """
 
 def dispatch_mail(venda, app):

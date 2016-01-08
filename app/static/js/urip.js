@@ -443,12 +443,13 @@ function formatCurrency(total) {
 
                         // $("#confirmbutton").click(pagarMoip);
                         window.venda = data.venda
+                        window.id_proprio_venda = data.
                         pagarMoip(data.dados_retorno);  // Return methods are: moipSuccess and moipError above
                     }else{
                         $("#infopagto").addClass("escondido");
                         //Inseriu o cupom gratuito
                         window.venda = data.venda
-                        moipSuccess();
+                        moipSuccess({"Status":"freetotal"});
                     }
                 }else{
                     waitingDialog.hide();
@@ -478,6 +479,13 @@ function formatCurrency(total) {
         'show': false
     });
 
+    $('#aguardapagto').modal({
+        'keyboard': false,
+        'backdrop': 'static',
+        'show': false
+    });
+
+
     moipSuccess = function(data){
         console.log("RETORNO DO MOIP")
         console.log(data);
@@ -492,7 +500,7 @@ function formatCurrency(total) {
             }
 
             return;
-        }else if(data.Status == "Autorizado"){
+        }else if(data.Status == "Autorizado" || data.Status == "freetotal"){
             waitingDialog.message('Gerando seus códigos...');
             $('#sse li').remove();
             var posting = $.post( "/ss", {"q":$("#quantidade").val(),"t":window.venda} );
@@ -513,13 +521,18 @@ function formatCurrency(total) {
             });
         }else{
             waitingDialog.hide();
-            mostrarMensagem("Seu pagamento não foi processado ainda");
+            $("#nropedido").html(window.id_proprio_venda);
+            $('#aguardapagto').modal('show');
         }
     }
     moipError = function(data){
         waitingDialog.hide();
         // toggleOverlay();
-        mostrarMensagem('Falha no pagto: ' + data[0].Mensagem);
+        if(Array.isArray(data)){
+            mostrarMensagem('Falha no pagto: ' + data[0].Mensagem);
+        }else{
+            mostrarMensagem('Falha no pagto: ' + data.Mensagem);
+        }
         // alert('Falha no pagto\n' + JSON.stringify(data));
     }
     var pagarMoip = function(settings){ //*AQUI VOCÊ DEVE COLOCAR O NOME DA FUNCAO A SER CAHAMADO

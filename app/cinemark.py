@@ -91,29 +91,43 @@ def send_mail(venda):
 def nasp():
     #Este método é chamado pelo MOIP somente enviando dados dos pagamentos
     #que ficaram pendentes
-    dados = request.form
+    try:
+        dados = request.get_json()
+    except Exception, e:
+        dados = request.args
 
     id_transacao = dados.get("id_transacao")
     status_pagamento = dados.get("status_pagamento")
 
-    if status_pagamento in ("Autorizado", "Concluido"):
-        #Então confirma o pagto e envia os SuperSaver
-        venda = Venda.query.filter( Venda.id_proprio == id_transacao ).first()
-        retorno = SuperSaver.query.filter(SuperSaver.usado == False).limit(venda.quantidade).all()
-        resposta = {
-            "codigos": [ s.cupom for s in retorno ]
-        }
-        #Atualiza os cupons já utilizados
-        for ss in retorno:
-            ss.usado = True
-            db_session.add(ss)
-        venda.super_savers = ",".join([ s.cupom for s in retorno ])
+    venda = Venda.query.filter( Venda.id_proprio == id_transacao ).first()
+    if not venda:
+        print "MOIP enviou aviso para venda %s porem esta não foi encontrada na base!" % id_transacao
+    else:
+        if status_pagamento in ("Autorizado", "Concluido"):
+            print "MOIP avisou pagamento OK para venda %s " % id_transacao
+            #Então confirma o pagto e envia os SuperSaver
+            retorno = SuperSaver.query.filter(SuperSaver.usado == False).limit(venda.quantidade).all()
+            resposta = {
+                "codigos": [ s.cupom for s in retorno ]
+            }
+            #Atualiza os cupons já utilizados
+            for ss in retorno:
+                ss.usado = True
+                db_session.add(ss)
+            venda.super_savers = ",".join([ s.cupom for s in retorno ])
+            send_mail(venda)
+        else:
+            #Marca a venda como falha
+            classificacao = dados.get("classificacao")
+            cod_moip = dados.get("cod_moip")
+            print "MOIP avisou pagamento NAO OK (status '%s') para venda %s " % (status_pagamento, id_transacao)
+            venda.falhou = True
+            venda.token_moip = "NASP: %s, moip_id: %s " % (classificacao,cod_moip)
+
         db_session.add(venda)
         db_session.commit()
 
-        send_mail(venda)
-
-    return "Ok"
+    return "Ok, processado"
 
 
 @app.route("/ss", methods=("POST",))
@@ -164,7 +178,8 @@ def contact():
             "sucesso":'Sucesso',
             'token':'',
             "tudogratis":True,
-            'venda' : venda.id
+            'venda' : venda.id,
+            'id_proprio': venda.id_proprio,
         }
 
         venda.pagamento = "Free"
@@ -213,7 +228,6 @@ def contact():
 
         moip.set_credenciais(token=app.config.get("MOIP_TOKEN"),key=app.config.get("MOIP_KEY"))
 
-        import pdb; pdb.set_trace()
         if app.config.get("DEBUG"):
             moip.set_ambiente('sandbox')
         else:
@@ -239,6 +253,7 @@ def contact():
         resposta['dados_retorno'] = dados_retorno
         resposta['tudogratis'] = False
         resposta['venda'] = venda.id
+        resposta['id_proprio'] = venda.id_proprio
 
     return jsonify(resposta)
 
