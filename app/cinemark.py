@@ -194,7 +194,9 @@ def contact():
         moip.set_checkout_transparente()
         print "Enviando pagto..."
         moip.envia()
+        print "pegando resposta..."
         resposta = moip.get_resposta() # {sucesso:'Sucesso','token':'KJHSDASKD392847293AHFJKDSAH'}
+        print "Resposta retornada"
         if resposta['sucesso'] == "Sucesso":
             venda.token_moip = resposta['token']
             create(venda)
