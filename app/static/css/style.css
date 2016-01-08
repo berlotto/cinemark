@@ -3217,3 +3217,14 @@ ul.footer-social li a {
 	background-color: #292C33;
 	font-size: 24px;
 }
+
+/*para a janela modal de confirmacao quando em telas pequenas*/
+@media (max-height: 600px) {
+	.modal-body p,
+	.modal-body li{
+		font-size: 12px;
+	}
+	.modal-body button{
+		font-size: 10px;
+	}
+}

@@ -1,5 +1,4 @@
 # -*- encoding: utf-8 -*-
-
 #
 
 from flask import Flask, render_template, jsonify, request
@@ -8,7 +7,8 @@ from hashlib import md5
 from cinemas import CINEMAS
 from database import db_session, create, Venda, SuperSaver
 from simpleauth import requires_auth
-from flask_mail import Mail, Message
+# from flask_mail import Mail, Message
+from enviar_email import dispatch_mail
 from datetime import datetime as dt
 import os
 
@@ -19,7 +19,7 @@ import os
 app = Flask(__name__)
 app.config.from_object('config')
 
-mail = Mail(app)
+# mail = Mail(app)
 
 #============================================================================
 @app.teardown_appcontext
@@ -72,22 +72,10 @@ def index():
 
 #============================================================================
 def send_mail(venda):
-    text_file = open(os.path.dirname(os.path.realpath(__file__))+"/email.txt")
+
     agora = dt.now()
-    ss = venda.super_savers
-    dados={
-        "nome_cliente": venda.nome_cliente,
-        "numero_pedido": venda.id_proprio,
-        "quantidade": venda.quantidade,
-        "cupons": ss.replace(",","\n"),
-        "prazo_cupons": app.config.get("PRAZO_CUPONS")
-    }
-    mensagem = text_file.read().format(**dados)
-    msg = Message(app.config.get("MAIL_SUBJECT"),
-          recipients=[venda.email_cliente])
-    msg.body = mensagem
     try:
-        mail.send(msg)
+        dispatch_mail(venda,app)
         venda.email_enviado = True
         venda.data_envio = agora.strftime('%d/%m/%Y %H:%M:%S')
     except Exception, e:
