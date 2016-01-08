@@ -3209,7 +3209,9 @@ ul.footer-social li a {
 }
 
 .moiplogo{
-	max-height: 50px;
+	max-height: 120px;
+	max-width: 150px;
+	display: inline-block;
 }
 
 #vlrtotal,
