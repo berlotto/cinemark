@@ -553,22 +553,23 @@ body.overflow-hidden:before {
 }
 /* -- */
 
-/* 1.4 Vertical Center Content */
-.vertical-center-wrapper {
-	height: 100%;
-}
+@media (min-width: 768px) {
+	/* 1.4 Vertical Center Content */
+	.vertical-center-wrapper {
+		height: 100%;
+	}
 
-.vertical-center-table {
-	display: table;
-	height: 100%;
-	width: 100%;
-}
+	.vertical-center-table {
+		display: table;
+		height: 100%;
+		width: 100%;
+	}
 
-.vertical-center-content {
-	display: table-cell;
-	vertical-align: middle;
+	.vertical-center-content {
+		display: table-cell;
+		vertical-align: middle;
+	}
 }
-
 
 /**
  * 2.0 COMPONENTS
@@ -1539,10 +1540,12 @@ header {
 }
 
 .header-clone .logo img {
+	/*
 	position: absolute;
 	top: 3px;
 	width: 70px;
 	margin-top: -9px;
+	*/
 }
 
 .header-clone a.menu-toggle {
