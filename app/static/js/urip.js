@@ -734,10 +734,12 @@ function formatCurrency(total) {
                                 $("#cidade").val(dados.localidade);
                                 $("#uf").val(dados.uf);
                                 $("#nro").focus();
+                                $('#cep').parent('div').removeClass('field-error');
                             } //end if.
                             else {
                                 //CEP pesquisado não foi encontrado.
                                 limpa_formulário_cep();
+                                $('#cep').parent('div').addClass('field-error');
                                 mostrarMensagem("Seu cep não foi encontrado. Corrija e tente novamente.");
                             }
                         });
@@ -745,12 +747,14 @@ function formatCurrency(total) {
                     else {
                         //cep é inválido.
                         limpa_formulário_cep();
+                        $('#cep').parent('div').addClass('field-error');
                         mostrarMensagem("Seu cep está inválido. Corrija e tente novamente.");
                     }
                 } //end if.
                 else {
                     //cep sem valor, limpa formulário.
                     limpa_formulário_cep();
+                    $('#cep').parent('div').addClass('field-error');
                     mostrarMensagem("Seu cep não foi informado.");
                 }
     })
