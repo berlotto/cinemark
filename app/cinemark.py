@@ -10,6 +10,7 @@ from simpleauth import requires_auth
 # from flask_mail import Mail, Message
 from enviar_email import dispatch_mail
 from datetime import datetime as dt
+from pytz import timezone
 import os
 import base64
 
@@ -20,7 +21,7 @@ import base64
 app = Flask(__name__)
 app.config.from_object('config')
 
-# mail = Mail(app)
+localize = timezone(app.config.get("TIMEZONE"))
 
 #============================================================================
 @app.teardown_appcontext
@@ -80,7 +81,7 @@ def index():
 #============================================================================
 def send_mail(venda):
 
-    agora = dt.now()
+    agora = localize.localize(dt.now())
     try:
         dispatch_mail(venda,app)
         venda.email_enviado = True

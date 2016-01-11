@@ -11,3 +11,4 @@ blinker==1.4
 itsdangerous==0.24
 lxml==3.5.0
 wsgiref==0.1.2
+pytz==2015.7

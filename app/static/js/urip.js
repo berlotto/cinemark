@@ -494,9 +494,9 @@ function formatCurrency(total) {
             // Erro na transacao
             waitingDialog.hide();
             if(data.Classificacao.Descricao != null && data.Classificacao.Descricao != ""){
-                mostrarMensagem("Seu pagamento não foi processado: " + data.Classificacao.Descricao);
+                mostrarMensagem("Seu pagamento não foi processado: " + data.Classificacao.Descricao, true);
             }else{
-                mostrarMensagem("Seu pagamento não foi processado pela instituição.");
+                mostrarMensagem("Seu pagamento não foi processado pela instituição.", true);
             }
 
             return;
