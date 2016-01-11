@@ -116,7 +116,12 @@
 												<a id="tofeaturettes" href="#featurettes" class="cta cta-stroke all-caps">SABER MAIS</a>
 											</li>
 											<li data-sr="enter left  over 1s wait 0.3s">
+												{%if qtd_ss <= 0 %}
+												<a class="cta cta-stroke all-caps">COMPRAR AGORA</a>
+												<h3>Infelizmente nossos estoques se esgotaram! Aguarde nova remessa.</h3>
+												{%else%}
 												<a class="cta cta-stroke all-caps contact-trigger">COMPRAR AGORA</a>
+												{%endif%}
 											</li>
 
 										</ul> <!--/ .inline-cta -->
@@ -178,7 +183,12 @@
 								<li>Se e-mail com o cupom não chegar em até 2 horas enviar e-mail para suporte@colaboradores.com.br
 							</ul> <!--/ .checklist -->
 
+							{%if qtd_ss <= 0 %}
+							<a class="cta cta-stroke all-caps">COMPRAR AGORA</a>
+							<h3>Infelizmente nossos estoques se esgotaram! Aguarde nova remessa.</h3>
+							{%else%}
 							<a class="cta cta-stroke all-caps contact-trigger">COMPRAR AGORA</a>
+							{%endif%}
 
 							<br>&nbsp;
 
@@ -317,7 +327,7 @@
 									</div>
 									<div class="col-lg-4 col-md-4">
 										<div class="required-field">
-											<input name="data_nascimento" id="data_nascimento" class="contact-input" type="email" placeholder="Data de nascimento">
+											<input name="data_nascimento" id="data_nascimento" class="contact-input" type="text" placeholder="Data de nascimento">
 										</div>
 									</div>
 

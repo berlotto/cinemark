@@ -443,7 +443,7 @@ function formatCurrency(total) {
 
                         // $("#confirmbutton").click(pagarMoip);
                         window.venda = data.venda
-                        window.id_proprio_venda = data.
+                        window.id_proprio_venda = data.id_proprio
                         pagarMoip(data.dados_retorno);  // Return methods are: moipSuccess and moipError above
                     }else{
                         $("#infopagto").addClass("escondido");
