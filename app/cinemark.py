@@ -167,6 +167,8 @@ def nasp():
             for ss in retorno:
                 ss.usado = True
                 db_session.add(ss)
+
+            venda.falhou = False
             venda.super_savers = ",".join([ s.cupom for s in retorno ])
             send_mail(venda)
         else:
