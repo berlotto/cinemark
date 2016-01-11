@@ -651,9 +651,17 @@ function formatCurrency(total) {
             $(this).parent('div').removeClass('field-error');
         }
     }
+    var validaCampoEmail = function(){
+        var valor = $(this).val();
+        if(valor.length == 0 || valor.indexOf('@') == '-1'){
+            $(this).parent('div').addClass('field-error');
+        }else{
+            $(this).parent('div').removeClass('field-error');
+        }
+    }
     $("#nome").blur(validaCampoObrigatorio);
     $("#telefone").blur(validaCampoObrigatorio);
-    $("#email").blur(validaCampoObrigatorio);
+    $("#email").blur(validaCampoEmail);
     $("#data_nascimento").blur(validaCampoObrigatorio);
     $("#cpf").blur(validaCampoObrigatorio);
     $("#nro").blur(validaCampoObrigatorio);

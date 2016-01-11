@@ -122,6 +122,8 @@ def nasp():
     #que ficaram pendentes
     try:
         dados = request.get_json()
+        if not dados:
+            raise Exception("No json data")
         print "/nasp - get data from JSON"
     except Exception, e:
         try:
