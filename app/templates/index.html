@@ -118,11 +118,15 @@
 											<li data-sr="enter left  over 1s wait 0.3s">
 												{%if qtd_ss <= 0 %}
 												<a class="cta cta-stroke all-caps">COMPRAR AGORA</a>
-												<h3>Infelizmente nossos estoques se esgotaram! Aguarde nova remessa.</h3>
 												{%else%}
 												<a class="cta cta-stroke all-caps contact-trigger">COMPRAR AGORA</a>
 												{%endif%}
 											</li>
+											{%if qtd_ss <= 0 %}
+											<li data-sr="enter left  over 1s wait 0.3s">
+												<h3>Infelizmente nossos estoques se esgotaram! Aguarde nova remessa.</h3>
+											</li>
+											{%endif%}
 
 										</ul> <!--/ .inline-cta -->
 
@@ -185,7 +189,7 @@
 
 							{%if qtd_ss <= 0 %}
 							<a class="cta cta-stroke all-caps">COMPRAR AGORA</a>
-							<h3>Infelizmente nossos estoques se esgotaram! Aguarde nova remessa.</h3>
+							<p><br>Infelizmente nossos estoques se esgotaram! Aguarde nova remessa.</p>
 							{%else%}
 							<a class="cta cta-stroke all-caps contact-trigger">COMPRAR AGORA</a>
 							{%endif%}

@@ -801,7 +801,8 @@ function formatCurrency(total) {
 
 	// Function to close the Notification
     $('a.notification-close').click(function(){
-	    $(this).parent('div').fadeOut(200);
+	    $("#subscribe-error-notification").removeClass('show-up');
+        // $(this).parent('div').fadeOut(200);
     });
 
 

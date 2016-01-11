@@ -40,13 +40,15 @@ def shutdown_session(exception=None):
 @requires_auth
 def background():
     total = len(Venda.query.all())
-    total_supersavers = len(SuperSaver.query.filter(SuperSaver.usado == False).all())
+    total_supersavers = len(SuperSaver.query.all())
+    total_supersavers_disponiveis = len(SuperSaver.query.filter(SuperSaver.usado == False).all())
     vendas = Venda.query.filter(Venda.falhou == False).filter(Venda.email_enviado == True).all()
     vendas_falhas = Venda.query.filter(Venda.falhou == True).all()
     vendas_sem_email = Venda.query.filter(Venda.falhou == False).filter(Venda.email_enviado == False).all()
     return render_template(
         "listagem.html",
         total_supersavers=total_supersavers,
+        total_supersavers_disponiveis=total_supersavers_disponiveis,
         vendas=vendas,
         vendas_falhas=vendas_falhas,
         vendas_sem_email=vendas_sem_email,
