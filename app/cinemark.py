@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 #
 
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, request, abort, json
 from moipy import Moip
 from hashlib import md5
 from cinemas import CINEMAS
@@ -11,6 +11,7 @@ from simpleauth import requires_auth
 from enviar_email import dispatch_mail
 from datetime import datetime as dt
 import os
+import base64
 
 #Temporatio
 #from random import choice
@@ -39,11 +40,13 @@ def shutdown_session(exception=None):
 @requires_auth
 def background():
     total = len(Venda.query.all())
+    total_supersavers = len(SuperSaver.query.filter(SuperSaver.usado == False).all())
     vendas = Venda.query.filter(Venda.falhou == False).filter(Venda.email_enviado == True).all()
     vendas_falhas = Venda.query.filter(Venda.falhou == True).all()
     vendas_sem_email = Venda.query.filter(Venda.falhou == False).filter(Venda.email_enviado == False).all()
     return render_template(
         "listagem.html",
+        total_supersavers=total_supersavers,
         vendas=vendas,
         vendas_falhas=vendas_falhas,
         vendas_sem_email=vendas_sem_email,
@@ -62,9 +65,11 @@ def index():
 
     desconto_dado = int(round(100-((app.config.get("VALOR_INGRESSO")*100)/app.config.get("VALOR_ORIGINAL")),0))
 
+    qtd_ss = len(SuperSaver.query.filter(SuperSaver.usado == False).all())
+
     return render_template(
         "index.html",
-        MOIP_URL=MOIP_URL,config=app.config,
+        MOIP_URL=MOIP_URL,config=app.config,qtd_ss=qtd_ss,
         cupom_desconto=md5_cupom, cupom_free=md5_free,
         valor_ingresso=app.config.get("VALOR_INGRESSO"),
         valor_desconto=desconto_dado,
@@ -87,21 +92,65 @@ def send_mail(venda):
     db_session.add(venda)
     db_session.commit()
 
+
+def get_data_as_dict(request):
+    if request.mimetype == 'application/json' and request.content_length <= 1024**2:
+        #
+        try:
+            decoded = base64.b64decode(request.get_data())
+            data = json.loads(decoded)
+        except Exception as e:
+            try:
+                data = dict([ x.split("=") for x in request.get_data().split("&") ])
+                return data
+            except Exception, e:
+                print e
+                raise Exception('Failed to decode JSON from get_data')
+            if not data:
+                print e
+                raise Exception('Failed to decode JSON from get_data')
+        else:
+            return data
+    else:
+        raise Exception("No expected DATA found:" + request.mimetype)
+
 @app.route("/nasp",methods=("POST",))
 def nasp():
     #Este método é chamado pelo MOIP somente enviando dados dos pagamentos
     #que ficaram pendentes
     try:
         dados = request.get_json()
+        print "/nasp - get data from JSON"
     except Exception, e:
-        dados = request.args
+        try:
+            dados = request.args
+            if(dados):
+                print "/nasp - get data from ARGS"
+            else:
+                dados = request.form
+                if(dados):
+                    print "/nasp - get data from FORM"
+                else:
+                    dados = get_data_as_dict(request)
+                    print "/nasp - get data from get_data"
+        except Exception, e:
+            print "OCORREU UM ERRO ao buscar dados do MOIP"
+            print e
+
+    try:
+        print "DADOS RECEBIDOS:"
+        print dados
+    except Exception, e:
+        print "WARN: Nao conseguiu mostrar os dados recebidos. Segue o fluxo..."
+        pass
 
     id_transacao = dados.get("id_transacao")
     status_pagamento = dados.get("status_pagamento")
 
     venda = Venda.query.filter( Venda.id_proprio == id_transacao ).first()
     if not venda:
-        print "MOIP enviou aviso para venda %s porem esta não foi encontrada na base!" % id_transacao
+        print "MOIP enviou aviso para venda '%s' porem esta não foi encontrada na base!" % id_transacao
+        abort(404)
     else:
         if status_pagamento in ("Autorizado", "Concluido"):
             print "MOIP avisou pagamento OK para venda %s " % id_transacao
@@ -159,6 +208,18 @@ def contact():
 
     dados = request.form
     tudogratis = False
+
+    #Verifica se ainda tem SuperSavers
+    qtd_ss = len(SuperSaver.query.filter(SuperSaver.usado == False).all())
+    if qtd_ss <= 0:
+        retorno = {
+            "sucesso":'Acabou',
+            'token':'Infelizmente nosso estoque se esgotou',
+            "tudogratis":False,
+            'venda' : 0,
+            'id_proprio':""
+        }
+        return jsonify(resposta)
 
     venda = Venda(dados.get("nome"))
     venda.quantidade = dados.get("quantidade")
