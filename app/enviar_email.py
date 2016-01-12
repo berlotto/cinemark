@@ -42,7 +42,7 @@ def dispatch_mail(venda, app):
   }
 
   mensagem = texto_email.format(**dados)
-  part2 = MIMEText(mensagem.encode("UTF-8"), 'html')
+  part2 = MIMEText(mensagem.encode("UTF-8"), 'html', 'utf-8')
 
   fromaddr = app.config.get("MAIL_DEFAULT_SENDER")
   toaddrs = venda.email_cliente

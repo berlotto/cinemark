@@ -360,7 +360,7 @@ function formatCurrency(total) {
         }else{
             $('#data_nascimento').parent('div').removeClass('field-error');
         }
-        if(cpf.length == 0){
+        if(cpf.length == 0 || !valida_cpf(cpf) ){
             var error = true;
             $('#cpf').parent('div').addClass('field-error');
         }else{
@@ -659,11 +659,19 @@ function formatCurrency(total) {
             $(this).parent('div').removeClass('field-error');
         }
     }
+    var validaCpfObrigatorio = function(){
+        var valor = $(this).val();
+        if(valor.length == 0 || !valida_cpf(valor) ){
+            $(this).parent('div').addClass('field-error');
+        }else{
+            $(this).parent('div').removeClass('field-error');
+        }
+    }
     $("#nome").blur(validaCampoObrigatorio);
     $("#telefone").blur(validaCampoObrigatorio);
     $("#email").blur(validaCampoEmail);
     $("#data_nascimento").blur(validaCampoObrigatorio);
-    $("#cpf").blur(validaCampoObrigatorio);
+    $("#cpf").blur(validaCpfObrigatorio);
     $("#nro").blur(validaCampoObrigatorio);
     $("#nrocartao").blur(validaCampoObrigatorio);
     $("#nome_cartao").blur(validaCampoObrigatorio);
