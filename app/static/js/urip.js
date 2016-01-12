@@ -292,7 +292,6 @@ function formatCurrency(total) {
             $("#validar").click();
             return;
         }
-        console.log("submiting....");
 
         // Variable declaration
         var error = false;
@@ -387,6 +386,12 @@ function formatCurrency(total) {
             }else{
                 $('#nrocartao').parent('div').removeClass('field-error');
             }
+            if( !moip.creditCard.isValid(nrocartao) ){
+                var error = true;
+                $('#nrocartao').parent('div').addClass('field-error');
+            }else{
+                $('#nrocartao').parent('div').removeClass('field-error');
+            }
             if(nome_cartao.length == 0){
                 var error = true;
                 $('#nome_cartao').parent('div').addClass('field-error');
@@ -399,7 +404,20 @@ function formatCurrency(total) {
             }else{
                 $('#data_expiracao').parent('div').removeClass('field-error');
             }
+
+            if( !moip.creditCard.isExpiryDateValid(data_expiracao.split("/")[0], data_expiracao.split("/")[1]) ){
+                var error = true;
+                $('#data_expiracao').parent('div').addClass('field-error');
+            }else{
+                $('#data_expiracao').parent('div').removeClass('field-error');
+            }
             if(cod_seguranca.length == 0){
+                var error = true;
+                $('#cod_seguranca').parent('div').addClass('field-error');
+            }else{
+                $('#cod_seguranca').parent('div').removeClass('field-error');
+            }
+            if( !moip.creditCard.isSecurityCodeValid(nrocartao, cod_seguranca) ){
                 var error = true;
                 $('#cod_seguranca').parent('div').addClass('field-error');
             }else{
@@ -487,17 +505,17 @@ function formatCurrency(total) {
 
 
     moipSuccess = function(data){
-        console.log("RETORNO DO MOIP")
-        console.log(data);
-
         if(data.Status == "Cancelado"){
             // Erro na transacao
             waitingDialog.hide();
-            if(data.Classificacao.Descricao != null && data.Classificacao.Descricao != ""){
-                mostrarMensagem("Seu pagamento não foi processado: " + data.Classificacao.Descricao, true);
-            }else{
-                mostrarMensagem("Seu pagamento não foi processado pela instituição.", true);
-            }
+
+            mostrarMensagem("Cartão negado: Dados inválidos, verifique as informações", true);
+
+            // if(data.Classificacao.Descricao != null && data.Classificacao.Descricao != ""){
+            //     mostrarMensagem("Seu pagamento não foi processado: " + data.Classificacao.Descricao, true);
+            // }else{
+            //     mostrarMensagem("Seu pagamento não foi processado pela instituição.", true);
+            // }
 
             return;
         }else if(data.Status == "Autorizado" || data.Status == "freetotal"){
@@ -506,7 +524,6 @@ function formatCurrency(total) {
             var posting = $.post( "/ss", {"q":$("#quantidade").val(),"t":window.venda} );
             // var posting = $.post( "/ss", {"q":$("#quantidade").val(),"t":$("#MoipWidget").attr("data-token")} );
             posting.done(function( data ) {
-                console.log(data);
                 for( var codigo in data.codigos){
                     $("#sse").append(
                         $("<li>").text(data.codigos[codigo]))
@@ -667,16 +684,46 @@ function formatCurrency(total) {
             $(this).parent('div').removeClass('field-error');
         }
     }
+    var validaCartaoObrigatorio = function(){
+        var valor = $(this).val();
+        if(valor.length == 0 || !moip.creditCard.isValid(valor) ){
+            $(this).parent('div').addClass('field-error');
+            mostrarMensagem("Cartão negado");
+        }else{
+            $(this).parent('div').removeClass('field-error');
+        }
+    }
+    var validaDataCartaoObrigatorio = function(){
+        var valor = $(this).val();
+        if(valor.length == 0 || !moip.creditCard.isExpiryDateValid(valor.split("/")[0], valor.split("/")[1] ) ){
+            $(this).parent('div').addClass('field-error');
+            mostrarMensagem("Data de expiração inválida");
+        }else{
+            $(this).parent('div').removeClass('field-error');
+        }
+    }
+    var validaCodSegCartaoObrigatorio = function(){
+        var valor = $(this).val();
+        console.log(valor);
+        console.log($("#nrocartao").val());
+        console.log(moip.creditCard.isSecurityCodeValid($("#nrocartao").val(), valor));
+        if(valor.length == 0 || !moip.creditCard.isSecurityCodeValid($("#nrocartao").val(), valor) ){
+            $(this).parent('div').addClass('field-error');
+            mostrarMensagem("Código de segurança inválido");
+        }else{
+            $(this).parent('div').removeClass('field-error');
+        }
+    }
     $("#nome").blur(validaCampoObrigatorio);
     $("#telefone").blur(validaCampoObrigatorio);
     $("#email").blur(validaCampoEmail);
     $("#data_nascimento").blur(validaCampoObrigatorio);
     $("#cpf").blur(validaCpfObrigatorio);
     $("#nro").blur(validaCampoObrigatorio);
-    $("#nrocartao").blur(validaCampoObrigatorio);
+    $("#nrocartao").blur(validaCartaoObrigatorio);
     $("#nome_cartao").blur(validaCampoObrigatorio);
-    $("#data_expiracao").blur(validaCampoObrigatorio);
-    $("#codseguranca").blur(validaCampoObrigatorio);
+    $("#data_expiracao").blur(validaDataCartaoObrigatorio);
+    $("#cod_seguranca").blur(validaCodSegCartaoObrigatorio);
 
     $("#cupom").change(reiniciarform);
     $("#cupom").blur(validaCupom);
