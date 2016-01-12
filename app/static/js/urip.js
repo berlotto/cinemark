@@ -704,9 +704,6 @@ function formatCurrency(total) {
     }
     var validaCodSegCartaoObrigatorio = function(){
         var valor = $(this).val();
-        console.log(valor);
-        console.log($("#nrocartao").val());
-        console.log(moip.creditCard.isSecurityCodeValid($("#nrocartao").val(), valor));
         if(valor.length == 0 || !moip.creditCard.isSecurityCodeValid($("#nrocartao").val(), valor) ){
             $(this).parent('div').addClass('field-error');
             mostrarMensagem("Código de segurança inválido");
