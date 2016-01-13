@@ -8,7 +8,7 @@ from cinemas import CINEMAS
 from database import db_session, create, Venda, SuperSaver
 from simpleauth import requires_auth
 # from flask_mail import Mail, Message
-from enviar_email import dispatch_mail
+from enviar_email import dispatch_mail, email_ss_terminando, email_ss_naoenviado
 from datetime import datetime as dt
 from pytz import timezone
 import os
@@ -90,6 +90,7 @@ def send_mail(venda):
         print "Erro ao enviar o email para %s " % venda.email_cliente
         print e
         venda.email_enviado = False
+        email_ss_naoenviado(venda,app)
 
     #Atualiza data de envio na base
     db_session.add(venda)
@@ -207,6 +208,10 @@ def ss():
 
     send_mail(venda)
 
+    estoque = len(SuperSaver.query.filter(SuperSaver.usado == False).all())
+    if estoque <= 30:
+        email_ss_terminando(app)
+
     return jsonify(resposta)
 
 #============================================================================
@@ -219,7 +224,7 @@ def contact():
     #Verifica se ainda tem SuperSavers
     qtd_ss = len(SuperSaver.query.filter(SuperSaver.usado == False).all())
     if qtd_ss <= 0:
-        retorno = {
+        resposta = {
             "sucesso":'Acabou',
             'token':'Infelizmente nosso estoque se esgotou',
             "tudogratis":False,

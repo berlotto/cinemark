@@ -469,6 +469,9 @@ function formatCurrency(total) {
                         window.venda = data.venda
                         moipSuccess({"Status":"freetotal"});
                     }
+                }else if (data.sucesso == "Acabou"){
+                    waitingDialog.hide();
+                    mostrarMensagem('Infelizmente nossos estoques se esgotaram! Aguarde nova remessa.', true);
                 }else{
                     waitingDialog.hide();
                     // toggleOverlay();
@@ -586,9 +589,22 @@ function formatCurrency(total) {
         }
     }
 
+    var colocaValor = function(){
+        var cupom = $("#cupom").val();
+        var qtd = $("#quantidade").val();
+        if( $.md5( cupom.toLowerCase() ) == CP_DES ){
+            $("#vlrunit").val( formatCurrency(VL_ING)+" (até "+VL_DES+"% de desconto)")
+            $("#vlrtotal").val( formatCurrency(qtd * VL_ING) )
+        }else{
+            if( $.md5( cupom.toLowerCase() ) == CP_FRE ){
+                $("#vlrunit").val("R$ 0,00 (100% de desconto)")
+                $("#vlrtotal").val("R$ 0,00")
+            }
+        }
+    }
     var priceValue = function(event){
 
-        event.preventDefault();
+        // event.preventDefault();
 
         validaQuantidade();
         validaCupom();
@@ -635,9 +651,9 @@ function formatCurrency(total) {
         $(".valores").addClass("escondido");
         $(".infocartao").addClass("escondido");
         $("#submit").addClass("escondido");
-        limpaFormGeral(true);
+        // limpaFormGeral(true);
     }
-    var validaQuantidade = function(){
+    var validaQuantidade = function(event){
         var qtd = $("#quantidade").val();
         if(qtd<1 || qtd>10){
             $('#quantidade').parent('div').addClass('field-error');
@@ -646,6 +662,7 @@ function formatCurrency(total) {
             return;
         }else{
             $('#quantidade').parent('div').removeClass('field-error');
+            colocaValor();
         }
     }
     var validaCupom = function(){
@@ -672,14 +689,19 @@ function formatCurrency(total) {
         var valor = $(this).val();
         if(valor.length == 0 || valor.indexOf('@') == '-1'){
             $(this).parent('div').addClass('field-error');
+            mostrarMensagem("Email inválido");
         }else{
             $(this).parent('div').removeClass('field-error');
         }
     }
     var validaCpfObrigatorio = function(){
         var valor = $(this).val();
-        if(valor.length == 0 || !valida_cpf(valor) ){
+        if(valor.length == 0 ){
             $(this).parent('div').addClass('field-error');
+            mostrarMensagem("CPF não informado");
+        }else if( !valida_cpf(valor) ){
+            $(this).parent('div').addClass('field-error');
+            mostrarMensagem("CPF Inválido");
         }else{
             $(this).parent('div').removeClass('field-error');
         }
@@ -724,7 +746,7 @@ function formatCurrency(total) {
 
     $("#cupom").change(reiniciarform);
     $("#cupom").blur(validaCupom);
-    $("#quantidade").change(reiniciarform);
+    // $("#quantidade").change(reiniciarform);
     $("#quantidade").blur(validaQuantidade);
     $("#validar").click(priceValue);
 

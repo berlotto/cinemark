@@ -71,3 +71,74 @@ def dispatch_mail(venda, app):
       server.quit()
   except Exception, e:
       raise e
+
+
+def email_ss_terminando(app):
+
+  mensagem = u"O estoque de SuperSavers está abaixo de 30"
+  part2 = MIMEText(mensagem.encode("UTF-8"), 'html', 'utf-8')
+
+  fromaddr = app.config.get("MAIL_DEFAULT_SENDER")
+  toaddrs = "suporte@colaboradores.com.br"
+
+  msg = MIMEMultipart('alternative')
+  msg['Subject'] = "INGRESSOS CINEMAFACIL TERMINANDO"
+  msg['From'] = fromaddr
+  msg['To'] = toaddrs
+  msg.attach(part2)
+
+  try:
+      server = smtplib.SMTP('in-v3.mailjet.com:587')
+      server.ehlo()
+      server.starttls()
+      server.ehlo()
+      server.login( app.config.get("MAIL_USERNAME"), app.config.get("MAIL_PASSWORD") )
+      server.sendmail(fromaddr, toaddrs, msg.as_string())
+      server.quit()
+  except Exception, e:
+      print e
+      print "ERRO AO ENVIAR EMAIL"
+
+
+def email_ss_naoenviado(venda,app):
+  texto = u"""
+<html><body>
+<p>Cliente: {nome_cliente}</p>
+<p>Venda: {numero_pedido}</p>
+<p>Quantidade de ingressos: {quantidade}</p>
+<p>Email: {email_cliente}</p>
+<p>Telefone: {telefone_cliente}</p>
+</body></html>
+  """
+  dados={
+      "nome_cliente": venda.nome_cliente,
+      "numero_pedido": venda.id_proprio,
+      "quantidade": venda.quantidade,
+      "email_cliente": venda.email_cliente,
+      "telefone_cliente": venda.telefone_cliente,
+  }
+
+  mensagem = texto.format(**dados)
+
+  part2 = MIMEText(mensagem.encode("UTF-8"), 'html', 'utf-8')
+
+  fromaddr = app.config.get("MAIL_DEFAULT_SENDER")
+  toaddrs = "suporte@colaboradores.com.br"
+
+  msg = MIMEMultipart('alternative')
+  msg['Subject'] = "SUPERSAVER NÂO PODE SER ENVIADO"
+  msg['From'] = fromaddr
+  msg['To'] = toaddrs
+  msg.attach(part2)
+
+  try:
+    server = smtplib.SMTP('in-v3.mailjet.com:587')
+    server.ehlo()
+    server.starttls()
+    server.ehlo()
+    server.login( app.config.get("MAIL_USERNAME"), app.config.get("MAIL_PASSWORD") )
+    server.sendmail(fromaddr, toaddrs, msg.as_string())
+    server.quit()
+  except Exception, e:
+    print e
+    print "ERRO AO ENVIAR EMAIL"

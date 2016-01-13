@@ -28,7 +28,7 @@ function verifica_cpf_cnpj ( valor ) {
         return false;
     }
 
-} // verifica_cpf_cnpj
+}; // verifica_cpf_cnpj
 
 /*
  calc_digitos_posicoes
@@ -40,7 +40,14 @@ function verifica_cpf_cnpj ( valor ) {
  @param string soma_digitos A soma das multiplicações entre posições e dígitos
  @return string Os dígitos enviados concatenados com o último dígito
 */
-function calc_digitos_posicoes( digitos, posicoes = 10, soma_digitos = 0 ) {
+function calc_digitos_posicoes( digitos, posicoes , soma_digitos ) {
+
+    if(posicoes == undefined || posicoes == null){
+        posicoes = 10;
+    }
+    if(soma_digitos == undefined || soma_digitos == null){
+        soma_digitos = 0;
+    }
 
     // Garante que o valor é uma string
     digitos = digitos.toString();
