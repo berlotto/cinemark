@@ -43,7 +43,7 @@
 	    <!-- FAV AND TOUCH ICONS -->
 	    <link rel="shortcut icon" href="/static/images/favicon/favicon.ico">
 
-	    <link rel="icon" type="image/png" href="/static/images/favicon/favicon-32.png">
+	    <link rel="icon" href="/static/images/favicon/favicon.ico">
 
 	    <!-- For iPad with high-resolution Retina display running iOS ≥ 7: -->
 		<link rel="apple-touch-icon-precomposed" sizes="152x152" href="/static/images/favicon/apple-touch-icon-152.png">
@@ -119,16 +119,16 @@
 											<li data-sr="enter left  over 1s wait 0.3s">
 												<a id="tofeaturettes" href="#featurettes" class="cta cta-stroke all-caps">SABER MAIS</a>
 											</li>
+											{%if qtd_ss > 0 %}
 											<li data-sr="enter left  over 1s wait 0.3s">
-												{%if qtd_ss <= 0 %}
-												<a class="cta cta-stroke all-caps">COMPRAR AGORA</a>
-												{%else%}
 												<a class="cta cta-stroke all-caps contact-trigger">COMPRAR AGORA</a>
-												{%endif%}
 											</li>
+											{%endif%}
 											{%if qtd_ss <= 0 %}
+											<br>
+											<br>
 											<li data-sr="enter left  over 1s wait 0.3s">
-												<h3>Infelizmente nossos estoques se esgotaram! Aguarde nova remessa.</h3>
+												<h3 >Infelizmente nossos estoques se esgotaram! <br>Aguarde nova remessa em breve</h3>
 											</li>
 											{%endif%}
 
