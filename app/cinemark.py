@@ -144,7 +144,7 @@ def nasp():
             print e
 
     try:
-        print "DADOS RECEBIDOS:"
+        print "DADOS RECEBIDOS DO MOIP:"
         print dados
     except Exception, e:
         print "WARN: Nao conseguiu mostrar os dados recebidos. Segue o fluxo..."
@@ -173,6 +173,8 @@ def nasp():
             venda.falhou = False
             venda.super_savers = ",".join([ s.cupom for s in retorno ])
             send_mail(venda)
+        elif status_pagamento in ("4","Concluido"):
+            print "MOIP avisou pagamento CONCLUIDO para venda %s " % id_transacao
         else:
             #Marca a venda como falha
             classificacao = dados.get("classificacao")
