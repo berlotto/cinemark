@@ -158,7 +158,7 @@ def nasp():
         print "MOIP enviou aviso para venda '%s' porem esta não foi encontrada na base!" % id_transacao
         abort(404)
     else:
-        if status_pagamento in ("1","4","Autorizado", "Concluido"):
+        if status_pagamento in ("1","Autorizado"):
             print "MOIP avisou pagamento OK para venda %s " % id_transacao
             #Então confirma o pagto e envia os SuperSaver
             retorno = SuperSaver.query.filter(SuperSaver.usado == False).limit(venda.quantidade).all()
