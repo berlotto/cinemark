@@ -607,8 +607,18 @@
 		<script src="/static/js/jquery.md5.js"></script>
 
 		<script>
-			CP_DES = "{{cupom_desconto}}";
-			CP_FRE = "{{cupom_free}}";
+			CP_DES = [
+			{% for cupon in cupom_desconto %}
+			  "{{cupon}}"
+			{% endfor %}
+			];
+
+			CP_FRE = [
+			{% for cupon in cupom_free %}
+			  "{{cupon}}"
+			{% endfor %}
+			];
+		
 			VL_ING = "{{valor_ingresso}}";
 			VL_DES = "{{valor_desconto}}";
 		</script>

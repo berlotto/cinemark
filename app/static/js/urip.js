@@ -592,11 +592,11 @@ function formatCurrency(total) {
     var colocaValor = function(){
         var cupom = $("#cupom").val();
         var qtd = $("#quantidade").val();
-        if( $.md5( cupom.toLowerCase() ) == CP_DES ){
+        if( CP_DES.indexOf( $.md5(cupom.toLowerCase()) ) > -1 ){
             $("#vlrunit").val( formatCurrency(VL_ING)+" (até "+VL_DES+"% de desconto)")
             $("#vlrtotal").val( formatCurrency(qtd * VL_ING) )
         }else{
-            if( $.md5( cupom.toLowerCase() ) == CP_FRE ){
+            if( CP_FRE.indexOf($.md5(cupom.toLowerCase())) > -1 ){
                 $("#vlrunit").val("R$ 0,00 (100% de desconto)")
                 $("#vlrtotal").val("R$ 0,00")
             }

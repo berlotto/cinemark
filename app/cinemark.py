@@ -63,8 +63,12 @@ def index():
         MOIP_URL = app.config.get("MOIP_SANDBOX_URL")
     else:
         MOIP_URL = app.config.get("MOIP_PROD_URL")
-    md5_cupom = md5(app.config.get("CUPOM_DESCONTO")).hexdigest()
-    md5_free = md5(app.config.get("CUPOM_FREE")).hexdigest()
+
+    cupons_pagos = app.config.get("CUPOM_DESCONTO").split(",")
+    cupons_free = app.config.get("CUPOM_FREE").split(",")
+
+    md5_cupom = [ md5(x).hexdigest() for x in cupons_pagos ]
+    md5_free = [ md5(x).hexdigest() for x in cupons_free ]
 
     desconto_dado = int(round(100-((app.config.get("VALOR_INGRESSO")*100)/app.config.get("VALOR_ORIGINAL")),0))
 
